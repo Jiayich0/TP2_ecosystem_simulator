@@ -1,0 +1,12 @@
+------------------------
+	ERROR 1
+------------------------
+Te marco solo 2 detalles para que no te lleves una sorpresa:
+
+updateMate: cuando _mateTarget == null y lo encuentras (pasa a no null), en esa misma iteración no avanzas ni persigues.
+No es un error, pero es un “detalle de dinámica”: en cuanto lo seleccionas, el movimiento de persecución empieza en el siguiente update. El enunciado no exige que sea inmediato, así que está OK.
+
+Si quisieras que en la misma iteración ya persiga, habría que reorganizar un poco, pero no lo tocaría si no hace falta.
+
+Acceso _mateTarget._desire
+Como lo tienes, debería compilar estando todo en simulator.model. Si te diera problemas de visibilidad, alternativa limpia sería añadir en Animal un setter, pero eso ya es tocar más de lo necesario. Si compila, déjalo.
