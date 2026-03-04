@@ -9,12 +9,12 @@ import java.util.Map;
 import org.json.JSONObject;
 
 public class BuilderBasedFactory<T> implements Factory<T> {
-	private Map<String, Builder<T>> _builders;
-	private List<JSONObject> _buildersInfo;
+	private Map<String, Builder<T>> builders;
+	private List<JSONObject> buildersInfo;
 
 	public BuilderBasedFactory() {
-		_builders = new HashMap<>();
-		_buildersInfo = new LinkedList<>();
+		this.builders = new HashMap<>();
+		this.buildersInfo = new LinkedList<>();
 	}
 
 	public BuilderBasedFactory(List<Builder<T>> builders) {
@@ -27,8 +27,8 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 	public void addBuilder(Builder<T> b) {
 		if (b == null)
 			throw new IllegalArgumentException("BuilderBasedFactory: builder es nulo");
-		_builders.put(b.getTypeTag(), b);
-		_buildersInfo.add(b.getInfo());
+		builders.put(b.getTypeTag(), b);
+		buildersInfo.add(b.getInfo());
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 		}
 		
 		String type = info.getString("type");
-		Builder<T> b = _builders.get(type);
+		Builder<T> b = builders.get(type);
 		
 		if (b != null) {
 			JSONObject data = info.has("data") ? info.getJSONObject("data") : new JSONObject();
@@ -53,6 +53,6 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 
 	@Override
 	public List<JSONObject> getInfo() {
-		return Collections.unmodifiableList(_buildersInfo);
+		return Collections.unmodifiableList(buildersInfo);
 	}
 }

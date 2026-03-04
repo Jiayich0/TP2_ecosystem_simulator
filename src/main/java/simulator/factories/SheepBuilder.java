@@ -10,15 +10,16 @@ import simulator.model.SelectionStrategy;
 import simulator.model.Sheep;
 
 public class SheepBuilder extends Builder<Animal> {
-	private Factory<SelectionStrategy> _strategyFactory;
+	private Factory<SelectionStrategy> strategyFactory;
 
 	public SheepBuilder(Factory<SelectionStrategy> strategyFactory) {
 		super("sheep", "Sheep");
 		if (strategyFactory == null)
 			throw new IllegalArgumentException("SheepBuilder: strategyFactory es nulo");
-		_strategyFactory = strategyFactory;
+		this.strategyFactory = strategyFactory;
 	}
 
+	
 	@Override
 	protected void fillInData(JSONObject o) { }
 
@@ -37,9 +38,9 @@ public class SheepBuilder extends Builder<Animal> {
 	private SelectionStrategy parseStrategy(JSONObject data, String key) {
 		if (data.has(key)) {
 			JSONObject s = data.getJSONObject(key);
-			return _strategyFactory.createInstance(s);
+			return strategyFactory.createInstance(s);
 		} else {
-			return _strategyFactory.createInstance(new JSONObject().put("type", "first"));
+			return strategyFactory.createInstance(new JSONObject().put("type", "first"));
 		}
 	}
 	

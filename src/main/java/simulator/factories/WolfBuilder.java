@@ -10,13 +10,13 @@ import simulator.model.SelectionStrategy;
 import simulator.model.Wolf;
 
 public class WolfBuilder extends Builder<Animal> {
-	private Factory<SelectionStrategy> _strategyFactory;
+	private Factory<SelectionStrategy> strategyFactory;
 	
 	public WolfBuilder(Factory<SelectionStrategy> strategyFactory) {
 		super("wolf", "Wolf");
 		if (strategyFactory == null)
 			throw new IllegalArgumentException("WolfBuilder: strategyFactory es nulo");
-		_strategyFactory = strategyFactory;
+		this.strategyFactory = strategyFactory;
 	}
 	
 
@@ -38,9 +38,9 @@ public class WolfBuilder extends Builder<Animal> {
 	private SelectionStrategy parseStrategy(JSONObject data, String key) {
 		if (data.has(key)) {
 			JSONObject s = data.getJSONObject(key);
-			return _strategyFactory.createInstance(s);
+			return strategyFactory.createInstance(s);
 		} else {
-			return _strategyFactory.createInstance(new JSONObject().put("type", "first"));
+			return strategyFactory.createInstance(new JSONObject().put("type", "first"));
 		}
 	}
 	
