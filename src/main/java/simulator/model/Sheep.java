@@ -10,19 +10,9 @@ public class Sheep extends Animal {
 	private Animal _dangerSource;
 	private SelectionStrategy _dangerStrategy;
 	
-	private final static String SHEEP_GENETIC_CODE = "Sheep";
-	private final static double INIT_SIGHT_SHEEP = 40.0;
-	private final static double INIT_SPEED_SHEEP = 35.0;
-	private final static double BOOST_FACTOR_SHEEP = 2.0;
-	private final static double MAX_AGE_SHEEP = 8.0;
-	private final static double FOOD_DROP_BOOST_FACTOR_SHEEP = 1.2;
-	private final static double FOOD_DROP_RATE_SHEEP = 20.0;
-	private final static double DESIRE_THRESHOLD_SHEEP = 65.0;
-	private final static double DESIRE_INCREASE_RATE_SHEEP = 40.0;
-	private final static double PREGNANT_PROBABILITY_SHEEP = 0.9;
 
 	public Sheep(SelectionStrategy mateStrategy, SelectionStrategy dangerStrategy, Vector2D pos) {
-		super(SHEEP_GENETIC_CODE, Diet.HERBIVORE, INIT_SIGHT_SHEEP, INIT_SPEED_SHEEP, mateStrategy, pos);
+		super(Const.SHEEP_GENETIC_CODE, Diet.HERBIVORE, Const.INIT_SIGHT_SHEEP, Const.INIT_SPEED_SHEEP, mateStrategy, pos);
 		if (dangerStrategy == null)
 			throw new IllegalArgumentException("Sheep: constructora -> dangerStrategy: no puede ser nulo");
 		_dangerStrategy = dangerStrategy;
@@ -73,7 +63,7 @@ public class Sheep extends Animal {
 		}
 		
 		// 4. si muere ponerlo DEAD
-		if (_energy == 0.0 || _age > MAX_AGE_SHEEP) {
+		if (_energy == 0.0 || _age > Const.MAX_AGE_SHEEP) {
 			setState(State.DEAD);
 			return;
 		}
@@ -81,29 +71,29 @@ public class Sheep extends Animal {
 		// 5. si no esta muerto
 		double food = _regionMngr.getFood(this, dt);
 		_energy = _energy + food;
-		_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+		_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 	}
 
 	private void updateNormal(double dt) {
 		// 1 avance
 		// i. dest cerca (8.0) -> dest random
-		if (_pos.distanceTo(_dest) < COLLISION_RANGE) {
+		if (_pos.distanceTo(_dest) < Const.COLLISION_RANGE) {
 			double x = Utils.RAND.nextDouble() * _regionMngr.getWidth();
 			double y = Utils.RAND.nextDouble() * _regionMngr.getHeight();
 
 			_dest = new Vector2D(x, y);
 		}
 		// ii. llama a move
-		double v = _speed * dt * Math.exp((_energy - MAX_ENERGY) * HUNGER_DECAY_EXP_FACTOR);
+		double v = _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 		move(v);
 		// iii. sumar edad
 		_age += dt;
 		// iv. quitar energía
-		_energy -= FOOD_DROP_RATE_SHEEP * dt;
-		_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+		_energy -= Const.FOOD_DROP_RATE_SHEEP * dt;
+		_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 		// v. aumentar deseo
-		_desire += DESIRE_INCREASE_RATE_SHEEP * dt;
-		_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
+		_desire += Const.DESIRE_INCREASE_RATE_SHEEP * dt;
+		_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
 		// 2 cambio de estado
 		// i. busca nuevo peligro
 		if (_dangerSource == null) {
@@ -114,7 +104,7 @@ public class Sheep extends Animal {
 		if (_dangerSource != null) {
 			setState(State.DANGER);
 		}
-		else if (_desire > DESIRE_THRESHOLD_SHEEP) {
+		else if (_desire > Const.DESIRE_THRESHOLD_SHEEP) {
 			setState(State.MATE);
 		}
 	}
@@ -126,37 +116,37 @@ public class Sheep extends Animal {
 		}
 		// 2 null -> igual que NORMAL
 		if (_dangerSource == null) {
-			if (_pos.distanceTo(_dest) < COLLISION_RANGE) {
+			if (_pos.distanceTo(_dest) < Const.COLLISION_RANGE) {
 				double x = Utils.RAND.nextDouble() * _regionMngr.getWidth();
 				double y = Utils.RAND.nextDouble() * _regionMngr.getHeight();
 				_dest = new Vector2D(x, y);
 			}
 
-			double v = _speed * dt * Math.exp((_energy - MAX_ENERGY) * HUNGER_DECAY_EXP_FACTOR);
+			double v = _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 			move(v);
 
 			_age += dt;
 
-			_energy -= FOOD_DROP_RATE_SHEEP * dt;
-			_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+			_energy -= Const.FOOD_DROP_RATE_SHEEP * dt;
+			_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 
-			_desire += DESIRE_INCREASE_RATE_SHEEP * dt;
-			_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
+			_desire += Const.DESIRE_INCREASE_RATE_SHEEP * dt;
+			_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
 
 		} else {
 			// i. dirección contraria
 			_dest = _pos.plus(_pos.minus(_dangerSource.getPosition()).direction());
 			// ii. llama a move
-			double v = BOOST_FACTOR_SHEEP * _speed * dt * Math.exp((_energy - MAX_ENERGY) * HUNGER_DECAY_EXP_FACTOR);
+			double v = Const.BOOST_FACTOR_SHEEP * _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 			move(v);
 			// iii. sumar edad
 			_age += dt;
 			// iv. quitar energía
-			_energy -= FOOD_DROP_RATE_SHEEP * FOOD_DROP_BOOST_FACTOR_SHEEP * dt;
-			_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+			_energy -= Const.FOOD_DROP_RATE_SHEEP * Const.FOOD_DROP_BOOST_FACTOR_SHEEP * dt;
+			_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 			// v. aumentar deseo
-			_desire += DESIRE_INCREASE_RATE_SHEEP * dt;
-			_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
+			_desire += Const.DESIRE_INCREASE_RATE_SHEEP * dt;
+			_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
 		}
 		
 		if (_dangerSource == null || _pos.distanceTo(_dangerSource.getPosition()) > _sightRange) {
@@ -165,7 +155,7 @@ public class Sheep extends Animal {
 		}
 
 		if (_dangerSource == null) {
-			if (_desire < DESIRE_THRESHOLD_SHEEP) {
+			if (_desire < Const.DESIRE_THRESHOLD_SHEEP) {
 				setState(State.NORMAL);
 			} else {
 				setState(State.MATE);
@@ -185,22 +175,22 @@ public class Sheep extends Animal {
 			
 			if (_mateTarget == null) {
 				// avanza como NORMAL
-				if (_pos.distanceTo(_dest) < COLLISION_RANGE) {
+				if (_pos.distanceTo(_dest) < Const.COLLISION_RANGE) {
 					double x = Utils.RAND.nextDouble() * _regionMngr.getWidth();
 					double y = Utils.RAND.nextDouble() * _regionMngr.getHeight();
 					_dest = new Vector2D(x, y);
 				}
 
-				double v = _speed * dt * Math.exp((_energy - MAX_ENERGY) * HUNGER_DECAY_EXP_FACTOR);
+				double v = _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 				move(v);
 
 				_age += dt;
 
-				_energy -= FOOD_DROP_RATE_SHEEP * dt;
-				_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+				_energy -= Const.FOOD_DROP_RATE_SHEEP * dt;
+				_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 
-				_desire += DESIRE_INCREASE_RATE_SHEEP * dt;
-				_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
+				_desire += Const.DESIRE_INCREASE_RATE_SHEEP * dt;
+				_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
 			}
 
 		}
@@ -208,23 +198,23 @@ public class Sheep extends Animal {
 			// i. perseguir
 			_dest = _mateTarget.getPosition();
 			
-			double v = BOOST_FACTOR_SHEEP * _speed * dt * Math.exp((_energy - MAX_ENERGY) * HUNGER_DECAY_EXP_FACTOR);
+			double v = Const.BOOST_FACTOR_SHEEP * _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 			move(v);
 			
 			_age += dt;
 			
-			_energy -= FOOD_DROP_RATE_SHEEP * FOOD_DROP_BOOST_FACTOR_SHEEP * dt;
-			_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+			_energy -= Const.FOOD_DROP_RATE_SHEEP * Const.FOOD_DROP_BOOST_FACTOR_SHEEP * dt;
+			_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 			
-			_desire += DESIRE_INCREASE_RATE_SHEEP * dt;
-			_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
+			_desire += Const.DESIRE_INCREASE_RATE_SHEEP * dt;
+			_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
 			// iv. si está en su rango
-			if (_pos.distanceTo(_mateTarget.getPosition()) < COLLISION_RANGE) {
+			if (_pos.distanceTo(_mateTarget.getPosition()) < Const.COLLISION_RANGE) {
 				_desire = 0.0;
 				_mateTarget._desire = 0.0;
 				
 				if (!this.isPregnant()) {
-					if (Utils.RAND.nextDouble() < PREGNANT_PROBABILITY_SHEEP) {
+					if (Utils.RAND.nextDouble() < Const.PREGNANT_PROBABILITY_SHEEP) {
 						_baby = new Sheep(this, _mateTarget);
 					}
 				}
@@ -241,7 +231,7 @@ public class Sheep extends Animal {
 		if (_dangerSource != null) {
 			setState(State.DANGER);
 		}
-		else if (_desire < DESIRE_THRESHOLD_SHEEP) {
+		else if (_desire < Const.DESIRE_THRESHOLD_SHEEP) {
 			setState(State.NORMAL);
 		}
 	}

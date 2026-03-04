@@ -9,23 +9,10 @@ public class Wolf extends Animal {
 
 	private Animal _huntTarget;
 	private SelectionStrategy _huntingStrategy;
-	
-	private final static String WOLF_GENETIC_CODE = "Wolf";
-	private final static double INIT_SIGHT_WOLF = 50;
-	private final static double INIT_SPEED_WOLF = 60;
-	private final static double BOOST_FACTOR_WOLF = 3.0;
-	private final static double MAX_AGE_WOLF = 14.0;
-	private final static double FOOD_THRSHOLD_WOLF = 50.0;
-	private final static double FOOD_DROP_BOOST_FACTOR_WOLF = 1.2;
-	private final static double FOOD_DROP_RATE_WOLF = 18.0;
-	private final static double FOOD_DROP_DESIRE_WOLF = 10.0;
-	private final static double FOOD_EAT_VALUE_WOLF = 50.0;
-	private final static double DESIRE_THRESHOLD_WOLF = 65.0;
-	private final static double DESIRE_INCREASE_RATE_WOLF = 30.0;
-	private final static double PREGNANT_PROBABILITY_WOLF = 0.75;
+
 
 	public Wolf(SelectionStrategy mateStrategy, SelectionStrategy huntingStrategy, Vector2D pos) {
-		super(WOLF_GENETIC_CODE, Diet.CARNIVORE, INIT_SIGHT_WOLF, INIT_SPEED_WOLF, mateStrategy, pos);
+		super(Const.WOLF_GENETIC_CODE, Diet.CARNIVORE, Const.INIT_SIGHT_WOLF, Const.INIT_SPEED_WOLF, mateStrategy, pos);
 		if (huntingStrategy == null)
 			throw new IllegalArgumentException("Wolf: constructora -> huntingStrategy: no puede ser nulo");
 		_huntingStrategy = huntingStrategy;
@@ -76,7 +63,7 @@ public class Wolf extends Animal {
 		}
 		
 		// 4. si esta muerto ponerlo DEAD
-		if (_energy == 0.0 || _age > MAX_AGE_WOLF) {
+		if (_energy == 0.0 || _age > Const.MAX_AGE_WOLF) {
 			setState(State.DEAD);
 			return;
 		}
@@ -84,31 +71,31 @@ public class Wolf extends Animal {
 		// 5. si no esta muerto
 		double food = _regionMngr.getFood(this, dt);
 		_energy = _energy + food;
-		_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+		_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 	}
 	
 	private void updateNormal(double dt) {
-		if (_pos.distanceTo(_dest) < COLLISION_RANGE) {
+		if (_pos.distanceTo(_dest) < Const.COLLISION_RANGE) {
 			double x = Utils.RAND.nextDouble() * _regionMngr.getWidth();
 			double y = Utils.RAND.nextDouble() * _regionMngr.getHeight();
 			_dest = new Vector2D(x, y);
 		}
 		
-		double v = _speed * dt * Math.exp((_energy - MAX_ENERGY) * HUNGER_DECAY_EXP_FACTOR);
+		double v = _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 		move(v);
 		
 		_age += dt;
 		
-		_energy -= FOOD_DROP_RATE_WOLF * dt;
-		_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+		_energy -= Const.FOOD_DROP_RATE_WOLF * dt;
+		_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 		
-		_desire += DESIRE_INCREASE_RATE_WOLF * dt;
-		_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
+		_desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
+		_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
 		
-		if (_energy < FOOD_THRSHOLD_WOLF) {
+		if (_energy < Const.FOOD_THRSHOLD_WOLF) {
 			setState(State.HUNGER);
 		}
-		else if (_desire > DESIRE_THRESHOLD_WOLF) {
+		else if (_desire > Const.DESIRE_THRESHOLD_WOLF) {
 			setState(State.MATE);
 		}
 	}
@@ -120,48 +107,48 @@ public class Wolf extends Animal {
 		}
 		
 		if (_huntTarget == null) {
-			if (_pos.distanceTo(_dest) < COLLISION_RANGE) {
+			if (_pos.distanceTo(_dest) < Const.COLLISION_RANGE) {
 				double x = Utils.RAND.nextDouble() * _regionMngr.getWidth();
 				double y = Utils.RAND.nextDouble() * _regionMngr.getHeight();
 				_dest = new Vector2D(x, y);
 			}
 
-			double v = _speed * dt * Math.exp((_energy - MAX_ENERGY) * HUNGER_DECAY_EXP_FACTOR);
+			double v = _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 			move(v);
 
 			_age += dt;
 
-			_energy -= FOOD_DROP_RATE_WOLF * dt;
-			_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+			_energy -= Const.FOOD_DROP_RATE_WOLF * dt;
+			_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 
-			_desire += DESIRE_INCREASE_RATE_WOLF * dt;
-			_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
+			_desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
+			_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
 		} else {
 			_dest = _huntTarget.getPosition();
 			
-			double v = BOOST_FACTOR_WOLF * _speed * dt * Math.exp((_energy - MAX_ENERGY) * HUNGER_DECAY_EXP_FACTOR);
+			double v = Const.BOOST_FACTOR_WOLF * _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 			move(v);
 			
 			_age += dt;
 			
-			_energy -= FOOD_DROP_RATE_WOLF * FOOD_DROP_BOOST_FACTOR_WOLF * dt;
-			_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+			_energy -= Const.FOOD_DROP_RATE_WOLF * Const.FOOD_DROP_BOOST_FACTOR_WOLF * dt;
+			_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 			
-			_desire += DESIRE_INCREASE_RATE_WOLF * dt;
-			_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
+			_desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
+			_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
 			
-			if (_pos.distanceTo(_huntTarget.getPosition()) < COLLISION_RANGE) {
+			if (_pos.distanceTo(_huntTarget.getPosition()) < Const.COLLISION_RANGE) {
 
 				_huntTarget.setState(State.DEAD);
 				_huntTarget = null;
 
-				_energy += FOOD_EAT_VALUE_WOLF;
-				_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+				_energy += Const.FOOD_EAT_VALUE_WOLF;
+				_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 			}
 		}
 		
-		if (_energy > FOOD_THRSHOLD_WOLF) {
-			if (_desire < DESIRE_THRESHOLD_WOLF) {
+		if (_energy > Const.FOOD_THRSHOLD_WOLF) {
+			if (_desire < Const.DESIRE_THRESHOLD_WOLF) {
 				setState(State.NORMAL);
 			} else {
 				setState(State.MATE);
@@ -182,59 +169,59 @@ public class Wolf extends Animal {
 			_mateTarget = _mateStrategy.select(this, candidatos);
 			
 			if (_mateTarget == null) {
-				if (_pos.distanceTo(_dest) < COLLISION_RANGE) {
+				if (_pos.distanceTo(_dest) < Const.COLLISION_RANGE) {
 					double x = Utils.RAND.nextDouble() * _regionMngr.getWidth();
 					double y = Utils.RAND.nextDouble() * _regionMngr.getHeight();
 					_dest = new Vector2D(x, y);
 				}
 
-				double v = _speed * dt * Math.exp((_energy - MAX_ENERGY) * HUNGER_DECAY_EXP_FACTOR);
+				double v = _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 				move(v);
 
 				_age += dt;
 
-				_energy -= FOOD_DROP_RATE_WOLF * dt;
-				_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+				_energy -= Const.FOOD_DROP_RATE_WOLF * dt;
+				_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 
-				_desire += DESIRE_INCREASE_RATE_WOLF * dt;
-				_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
+				_desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
+				_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
 			}
 		}
 		else {
 			_dest = _mateTarget.getPosition();
 			
-			double v = BOOST_FACTOR_WOLF * _speed * dt * Math.exp((_energy - MAX_ENERGY) * HUNGER_DECAY_EXP_FACTOR);
+			double v = Const.BOOST_FACTOR_WOLF * _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 			move(v);
 			
 			_age += dt;
 			
-			_energy -= FOOD_DROP_RATE_WOLF * FOOD_DROP_BOOST_FACTOR_WOLF * dt;
-			_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+			_energy -= Const.FOOD_DROP_RATE_WOLF * Const.FOOD_DROP_BOOST_FACTOR_WOLF * dt;
+			_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 			
-			_desire += DESIRE_INCREASE_RATE_WOLF * dt;
-			_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
+			_desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
+			_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
 			
-			if (_pos.distanceTo(_mateTarget.getPosition()) < COLLISION_RANGE) {
+			if (_pos.distanceTo(_mateTarget.getPosition()) < Const.COLLISION_RANGE) {
 				_desire = 0.0;
 				_mateTarget._desire = 0.0;
 				
 				if (!this.isPregnant()) {
-					if (Utils.RAND.nextDouble() < PREGNANT_PROBABILITY_WOLF) {
+					if (Utils.RAND.nextDouble() < Const.PREGNANT_PROBABILITY_WOLF) {
 						_baby = new Wolf(this, _mateTarget);
 					}
 				}
 				
-				_energy -= FOOD_DROP_DESIRE_WOLF;
-				_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
+				_energy -= Const.FOOD_DROP_DESIRE_WOLF;
+				_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
 				
 				_mateTarget = null;
 			}
 		}
 		
-		if (_energy < FOOD_THRSHOLD_WOLF) {
+		if (_energy < Const.FOOD_THRSHOLD_WOLF) {
 			setState(State.HUNGER);
 		}
-		else if (_desire < DESIRE_THRESHOLD_WOLF) {
+		else if (_desire < Const.DESIRE_THRESHOLD_WOLF) {
 			setState(State.NORMAL);
 		}
 	}

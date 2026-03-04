@@ -7,9 +7,6 @@ public class DynamicSupplyRegion extends Region {
 	private double _actualFood;
 	private double _growthFactor;
 	
-	private final static double FOOD_EAT_RATE_HERBS = 60.0;
-	private final static double FOOD_SHORTAGE_TH_HERBS = 5.0;
-	private final static double FOOD_SHORTAGE_EXP_HERBS = 2.0;
 
 	public DynamicSupplyRegion(double initialFood, double growthFactor) {
 		super();
@@ -35,7 +32,7 @@ public class DynamicSupplyRegion extends Region {
 			return 0.0;
 		}
 		int n = getN();
-		double amount = Math.min(_actualFood, FOOD_EAT_RATE_HERBS * Math.exp(-Math.max(0, n - FOOD_SHORTAGE_TH_HERBS) * FOOD_SHORTAGE_EXP_HERBS) * dt);
+		double amount = Math.min(_actualFood, Const.FOOD_EAT_RATE_HERBS * Math.exp(-Math.max(0, n - Const.FOOD_SHORTAGE_TH_HERBS) * Const.FOOD_SHORTAGE_EXP_HERBS) * dt);
 		_actualFood -= amount;
 		return amount;
 	}

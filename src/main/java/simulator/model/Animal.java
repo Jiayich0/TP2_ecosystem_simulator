@@ -21,15 +21,7 @@ public abstract class Animal implements Entity, AnimalInfo {
 	protected Animal _baby;
 	protected AnimalMapView _regionMngr;
 	protected SelectionStrategy _mateStrategy;
-	
-	protected final static double INIT_ENERGY = 100.0;
-	protected final static double MUTATION_TOLERANCE = 0.2;
-	protected final static double NEARBY_FACTOR = 60.0;
-	// subclases
-	protected final static double COLLISION_RANGE = 8.0;
-	protected final static double HUNGER_DECAY_EXP_FACTOR = 0.007;
-	protected final static double MAX_ENERGY = 100.0;
-	protected final static double MAX_DESIRE = 100.0;
+
 
 	protected Animal(String geneticCode, Diet diet, double sightRange, double initSpeed, SelectionStrategy mateStrategy,
 			Vector2D pos) {
@@ -51,7 +43,7 @@ public abstract class Animal implements Entity, AnimalInfo {
 		_mateStrategy = mateStrategy;
 		_speed = Utils.getRandomizedParameter(initSpeed, 0.1);
 		_state = State.NORMAL;
-		_energy = INIT_ENERGY;
+		_energy = Const.INIT_ENERGY;
 		_desire = 0.0;
 		_dest = null;
 		_mateTarget = null;
@@ -70,9 +62,9 @@ public abstract class Animal implements Entity, AnimalInfo {
 		_diet = p1._diet;
 		_mateStrategy = p2._mateStrategy;
 		_energy = (p1._energy + p2._energy) / 2;
-		_pos = p1.getPosition().plus(Vector2D.get_random_vector(-1, 1).scale(NEARBY_FACTOR * (Utils.RAND.nextGaussian() + 1)));
-		_sightRange = Utils.getRandomizedParameter((p1.getSightRange() + p2.getSightRange()) / 2, MUTATION_TOLERANCE);
-		_speed = Utils.getRandomizedParameter((p1.getSpeed() + p2.getSpeed()) / 2, MUTATION_TOLERANCE);
+		_pos = p1.getPosition().plus(Vector2D.get_random_vector(-1, 1).scale(Const.NEARBY_FACTOR * (Utils.RAND.nextGaussian() + 1)));
+		_sightRange = Utils.getRandomizedParameter((p1.getSightRange() + p2.getSightRange()) / 2, Const.MUTATION_TOLERANCE);
+		_speed = Utils.getRandomizedParameter((p1.getSpeed() + p2.getSpeed()) / 2, Const.MUTATION_TOLERANCE);
 	}
 
 	

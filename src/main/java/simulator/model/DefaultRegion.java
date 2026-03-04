@@ -2,9 +2,6 @@ package simulator.model;
 
 public class DefaultRegion extends Region {
 	
-	private final static double FOOD_EAT_RATE_HERBS = 60.0;
-	private final static double FOOD_SHORTAGE_TH_HERBS = 5.0;
-	private final static double FOOD_SHORTAGE_EXP_HERBS = 2.0;
 	
 	@Override
 	public void update(double dt) {
@@ -17,7 +14,7 @@ public class DefaultRegion extends Region {
 			return 0.0;
 		}
 		int n = getN();
-		return FOOD_EAT_RATE_HERBS * Math.exp(-Math.max(0, n - FOOD_SHORTAGE_TH_HERBS) * FOOD_SHORTAGE_EXP_HERBS) * dt;
+		return Const.FOOD_EAT_RATE_HERBS * Math.exp(-Math.max(0, n - Const.FOOD_SHORTAGE_TH_HERBS) * Const.FOOD_SHORTAGE_EXP_HERBS) * dt;
 	}
 
 	private int getN() {
