@@ -84,8 +84,7 @@ public class Wolf extends Animal {
 		// 5. si no esta muerto
 		double food = _regionMngr.getFood(this, dt);
 		_energy = _energy + food;
-		if (_energy < 0.0) _energy = 0.0;
-		if (_energy > MAX_ENERGY) _energy = MAX_ENERGY;
+		_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 	}
 	
 	private void updateNormal(double dt) {
@@ -101,12 +100,10 @@ public class Wolf extends Animal {
 		_age += dt;
 		
 		_energy -= FOOD_DROP_RATE_WOLF * dt;
-		if (_energy < 0.0) _energy = 0.0;
-		if (_energy > MAX_ENERGY) _energy = MAX_ENERGY;
+		_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 		
 		_desire += DESIRE_INCREASE_RATE_WOLF * dt;
-		if (_desire < 0.0) _desire = 0.0;
-		if (_desire > MAX_DESIRE) _desire = MAX_DESIRE;
+		_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
 		
 		if (_energy < FOOD_THRSHOLD_WOLF) {
 			setState(State.HUNGER);
@@ -135,12 +132,10 @@ public class Wolf extends Animal {
 			_age += dt;
 
 			_energy -= FOOD_DROP_RATE_WOLF * dt;
-			if (_energy < 0.0) _energy = 0.0;
-			if (_energy > MAX_ENERGY) _energy = MAX_ENERGY;
+			_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 
 			_desire += DESIRE_INCREASE_RATE_WOLF * dt;
-			if (_desire < 0.0) _desire = 0.0;
-			if (_desire > MAX_DESIRE) _desire = MAX_DESIRE;
+			_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
 		} else {
 			_dest = _huntTarget.getPosition();
 			
@@ -150,12 +145,10 @@ public class Wolf extends Animal {
 			_age += dt;
 			
 			_energy -= FOOD_DROP_RATE_WOLF * FOOD_DROP_BOOST_FACTOR_WOLF * dt;
-			if (_energy < 0.0) _energy = 0.0;
-			if (_energy > MAX_ENERGY) _energy = MAX_ENERGY;
+			_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 			
 			_desire += DESIRE_INCREASE_RATE_WOLF * dt;
-			if (_desire < 0.0) _desire = 0.0;
-			if (_desire > MAX_DESIRE) _desire = MAX_DESIRE;
+			_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
 			
 			if (_pos.distanceTo(_huntTarget.getPosition()) < COLLISION_RANGE) {
 
@@ -163,7 +156,7 @@ public class Wolf extends Animal {
 				_huntTarget = null;
 
 				_energy += FOOD_EAT_VALUE_WOLF;
-				if (_energy > MAX_ENERGY) _energy = MAX_ENERGY;
+				_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 			}
 		}
 		
@@ -201,12 +194,10 @@ public class Wolf extends Animal {
 				_age += dt;
 
 				_energy -= FOOD_DROP_RATE_WOLF * dt;
-				if (_energy < 0.0) _energy = 0.0;
-				if (_energy > MAX_ENERGY) _energy = MAX_ENERGY;
+				_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 
 				_desire += DESIRE_INCREASE_RATE_WOLF * dt;
-				if (_desire < 0.0) _desire = 0.0;
-				if (_desire > MAX_DESIRE) _desire = MAX_DESIRE;
+				_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
 			}
 		}
 		else {
@@ -218,12 +209,10 @@ public class Wolf extends Animal {
 			_age += dt;
 			
 			_energy -= FOOD_DROP_RATE_WOLF * FOOD_DROP_BOOST_FACTOR_WOLF * dt;
-			if (_energy < 0.0) _energy = 0.0;
-			if (_energy > MAX_ENERGY) _energy = MAX_ENERGY;
+			_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 			
 			_desire += DESIRE_INCREASE_RATE_WOLF * dt;
-			if (_desire < 0.0) _desire = 0.0;
-			if (_desire > MAX_DESIRE) _desire = MAX_DESIRE;
+			_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
 			
 			if (_pos.distanceTo(_mateTarget.getPosition()) < COLLISION_RANGE) {
 				_desire = 0.0;
@@ -236,7 +225,7 @@ public class Wolf extends Animal {
 				}
 				
 				_energy -= FOOD_DROP_DESIRE_WOLF;
-				if (_energy < 0.0) _energy = 0.0;
+				_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 				
 				_mateTarget = null;
 			}

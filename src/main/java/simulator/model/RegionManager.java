@@ -9,6 +9,8 @@ import java.util.function.Predicate;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import simulator.misc.Utils;
+
 public class RegionManager implements AnimalMapView {
 	
 	private int _mapWidth;
@@ -118,30 +120,16 @@ public class RegionManager implements AnimalMapView {
 		double aY = a.getPosition().getY();
 		
 		// caja visible del animal (cuadrado)
-		double minX = aX - r;
-		double maxX = aX + r;
-		double minY = aY - r;
-		double maxY = aY + r;
+		double minX = Utils.constrainValueInRange(aX - r, 0.0, _mapWidth - 1);
+		double maxX = Utils.constrainValueInRange(aX + r, 0.0, _mapWidth - 1);
+		double minY = Utils.constrainValueInRange(aY - r, 0.0, _mapHeight - 1);
+		double maxY = Utils.constrainValueInRange(aY + r, 0.0, _mapHeight - 1);
 		
-		// evitar salirse del mapa (mapHeight-Width)
-		if (minX < 0) minX = 0;
-		if (minY < 0) minY = 0;
-		if (maxX >= _mapWidth) maxX = _mapWidth - 1;
-		if (maxY >= _mapHeight) maxY = _mapHeight - 1;
-		
-		// se podría buscar con esta iformación en el mapa pero sería muy caro, mejor restringirlo a regiones:
-		
-		// de coords/pos a region
-		int minCol = (int)(minX / _regWidth);
-		int maxCol = (int)(maxX / _regWidth);
-		int minRow = (int)(minY / _regHeight);
-		int maxRow = (int)(maxY / _regHeight);
-		
-		// evitar salirse del mapa (matriz region[rows][cols]
-		if (minCol < 0) minCol = 0;
-		if (minRow < 0) minRow = 0;
-		if (maxCol >= _cols) maxCol = _cols - 1;
-		if (maxRow >= _rows) maxRow = _rows - 1;
+		// por regiones
+		int minCol = (int) Utils.constrainValueInRange(minX / _regWidth, 0, _cols - 1);
+		int maxCol = (int) Utils.constrainValueInRange(maxX / _regWidth, 0, _cols - 1);
+		int minRow = (int) Utils.constrainValueInRange(minY / _regHeight, 0, _rows - 1);
+		int maxRow = (int) Utils.constrainValueInRange(maxY / _regHeight, 0, _rows - 1);
 		
 		// iterar sobre las regiones que alcanzan el rango de vision
 		for (int row = minRow; row <= maxRow; row++) {

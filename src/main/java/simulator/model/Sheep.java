@@ -81,8 +81,7 @@ public class Sheep extends Animal {
 		// 5. si no esta muerto
 		double food = _regionMngr.getFood(this, dt);
 		_energy = _energy + food;
-		if (_energy < 0.0) _energy = 0.0;
-		if (_energy > MAX_ENERGY) _energy = MAX_ENERGY;
+		_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 	}
 
 	private void updateNormal(double dt) {
@@ -101,12 +100,10 @@ public class Sheep extends Animal {
 		_age += dt;
 		// iv. quitar energía
 		_energy -= FOOD_DROP_RATE_SHEEP * dt;
-		if (_energy < 0.0) _energy = 0.0;
-		if (_energy > MAX_ENERGY) _energy = MAX_ENERGY;
+		_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 		// v. aumentar deseo
 		_desire += DESIRE_INCREASE_RATE_SHEEP * dt;
-		if (_desire < 0.0) _desire = 0.0;
-		if (_desire > MAX_DESIRE) _desire = MAX_DESIRE;
+		_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
 		// 2 cambio de estado
 		// i. busca nuevo peligro
 		if (_dangerSource == null) {
@@ -141,12 +138,10 @@ public class Sheep extends Animal {
 			_age += dt;
 
 			_energy -= FOOD_DROP_RATE_SHEEP * dt;
-			if (_energy < 0.0) _energy = 0.0;
-			if (_energy > MAX_ENERGY) _energy = MAX_ENERGY;
+			_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 
 			_desire += DESIRE_INCREASE_RATE_SHEEP * dt;
-			if (_desire < 0.0) _desire = 0.0;
-			if (_desire > MAX_DESIRE) _desire = MAX_DESIRE;
+			_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
 
 		} else {
 			// i. dirección contraria
@@ -158,12 +153,10 @@ public class Sheep extends Animal {
 			_age += dt;
 			// iv. quitar energía
 			_energy -= FOOD_DROP_RATE_SHEEP * FOOD_DROP_BOOST_FACTOR_SHEEP * dt;
-			if (_energy < 0.0) _energy = 0.0;
-			if (_energy > MAX_ENERGY) _energy = MAX_ENERGY;
+			_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 			// v. aumentar deseo
 			_desire += DESIRE_INCREASE_RATE_SHEEP * dt;
-			if (_desire < 0.0) _desire = 0.0;
-			if (_desire > MAX_DESIRE) _desire = MAX_DESIRE;
+			_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
 		}
 		
 		if (_dangerSource == null || _pos.distanceTo(_dangerSource.getPosition()) > _sightRange) {
@@ -204,12 +197,10 @@ public class Sheep extends Animal {
 				_age += dt;
 
 				_energy -= FOOD_DROP_RATE_SHEEP * dt;
-				if (_energy < 0.0) _energy = 0.0;
-				if (_energy > MAX_ENERGY) _energy = MAX_ENERGY;
+				_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 
 				_desire += DESIRE_INCREASE_RATE_SHEEP * dt;
-				if (_desire < 0.0) _desire = 0.0;
-				if (_desire > MAX_DESIRE) _desire = MAX_DESIRE;
+				_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
 			}
 
 		}
@@ -223,12 +214,10 @@ public class Sheep extends Animal {
 			_age += dt;
 			
 			_energy -= FOOD_DROP_RATE_SHEEP * FOOD_DROP_BOOST_FACTOR_SHEEP * dt;
-			if (_energy < 0.0) _energy = 0.0;
-			if (_energy > MAX_ENERGY) _energy = MAX_ENERGY;
+			_energy = Utils.constrainValueInRange(_energy, 0.0, MAX_ENERGY);
 			
 			_desire += DESIRE_INCREASE_RATE_SHEEP * dt;
-			if (_desire < 0.0) _desire = 0.0;
-			if (_desire > MAX_DESIRE) _desire = MAX_DESIRE;
+			_desire = Utils.constrainValueInRange(_desire, 0.0, MAX_DESIRE);
 			// iv. si está en su rango
 			if (_pos.distanceTo(_mateTarget.getPosition()) < COLLISION_RANGE) {
 				_desire = 0.0;
