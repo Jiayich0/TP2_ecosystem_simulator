@@ -19,7 +19,7 @@ public class DefaultRegion extends Region {
 
 	private int getN() {
 		int n = 0;
-		for (Animal animal : _animals) {
+		for (Animal animal : animals) {
 			if (animal.getDiet() == Diet.HERBIVORE) {
 				n++;
 			}

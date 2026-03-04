@@ -7,33 +7,33 @@ import simulator.misc.Vector2D;
 
 public class Wolf extends Animal {
 
-	private Animal _huntTarget;
-	private SelectionStrategy _huntingStrategy;
+	private Animal huntTarget;
+	private SelectionStrategy huntingStrategy;
 
 
 	public Wolf(SelectionStrategy mateStrategy, SelectionStrategy huntingStrategy, Vector2D pos) {
 		super(Const.WOLF_GENETIC_CODE, Diet.CARNIVORE, Const.INIT_SIGHT_WOLF, Const.INIT_SPEED_WOLF, mateStrategy, pos);
 		if (huntingStrategy == null)
 			throw new IllegalArgumentException("Wolf: constructora -> huntingStrategy: no puede ser nulo");
-		_huntingStrategy = huntingStrategy;
-		_huntTarget = null;
+		this.huntingStrategy = huntingStrategy;
+		this.huntTarget = null;
 	}
 
 	protected Wolf(Wolf p1, Animal p2) {
 		super(p1, p2);
-		_huntingStrategy = p1._huntingStrategy;
-		_huntTarget = null;
+		this.huntingStrategy = p1.huntingStrategy;
+		this.huntTarget = null;
 	}
 
 	@Override
 	public void update(double dt) {
 		// 1. si es dead no hacer nada
-		if (_state == State.DEAD) {
+		if (state == State.DEAD) {
 			return;
 		}
 		
 		// 2, actualizar según estado
-		switch (_state) {
+		switch (state) {
 		case NORMAL:
 			updateNormal(dt);
 			break;
@@ -48,107 +48,107 @@ public class Wolf extends Animal {
 		}
 		
 		// 3. si pos fuera del mapa y ponerlo NORMAL
-		double width = _regionMngr.getWidth();
-		double height = _regionMngr.getHeight();
-		double x = _pos.getX();
-		double y = _pos.getY();
+		double width = regionMngr.getWidth();
+		double height = regionMngr.getHeight();
+		double x = pos.getX();
+		double y = pos.getY();
 		if (x < 0 || x >= width || y < 0 || y >= height) {
 			while (x >= width) x = (x - width);
 			while (x < 0) x = (x + width);
 			while (y >= height) y = (y - height);
 			while (y < 0) y = (y + height);
 			
-			_pos = new Vector2D(x, y);
+			pos = new Vector2D(x, y);
 			setState(State.NORMAL);
 		}
 		
 		// 4. si esta muerto ponerlo DEAD
-		if (_energy == 0.0 || _age > Const.MAX_AGE_WOLF) {
+		if (energy == 0.0 || age > Const.MAX_AGE_WOLF) {
 			setState(State.DEAD);
 			return;
 		}
 		
 		// 5. si no esta muerto
-		double food = _regionMngr.getFood(this, dt);
-		_energy = _energy + food;
-		_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
+		double food = regionMngr.getFood(this, dt);
+		energy = energy + food;
+		energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
 	}
 	
 	private void updateNormal(double dt) {
-		if (_pos.distanceTo(_dest) < Const.COLLISION_RANGE) {
-			double x = Utils.RAND.nextDouble() * _regionMngr.getWidth();
-			double y = Utils.RAND.nextDouble() * _regionMngr.getHeight();
-			_dest = new Vector2D(x, y);
+		if (pos.distanceTo(dest) < Const.COLLISION_RANGE) {
+			double x = Utils.RAND.nextDouble() * regionMngr.getWidth();
+			double y = Utils.RAND.nextDouble() * regionMngr.getHeight();
+			dest = new Vector2D(x, y);
 		}
 		
-		double v = _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
+		double v = speed * dt * Math.exp((energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 		move(v);
 		
-		_age += dt;
+		age += dt;
 		
-		_energy -= Const.FOOD_DROP_RATE_WOLF * dt;
-		_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
+		energy -= Const.FOOD_DROP_RATE_WOLF * dt;
+		energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
 		
-		_desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
-		_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
+		desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
+		desire = Utils.constrainValueInRange(desire, 0.0, Const.MAX_DESIRE);
 		
-		if (_energy < Const.FOOD_THRSHOLD_WOLF) {
+		if (energy < Const.FOOD_THRSHOLD_WOLF) {
 			setState(State.HUNGER);
 		}
-		else if (_desire > Const.DESIRE_THRESHOLD_WOLF) {
+		else if (desire > Const.DESIRE_THRESHOLD_WOLF) {
 			setState(State.MATE);
 		}
 	}
 	
 	private void updateHunger(double dt) {
-		if (_huntTarget == null || _huntTarget.getState() == State.DEAD || _pos.distanceTo(_huntTarget.getPosition()) > _sightRange) {
-			List<Animal> herbivoros = _regionMngr.getAnimalsInRange(this, an -> an.getDiet() == Diet.HERBIVORE);
-			_huntTarget = _huntingStrategy.select(this, herbivoros);
+		if (huntTarget == null || huntTarget.getState() == State.DEAD || pos.distanceTo(huntTarget.getPosition()) > sightRange) {
+			List<Animal> herbivoros = regionMngr.getAnimalsInRange(this, an -> an.getDiet() == Diet.HERBIVORE);
+			huntTarget = huntingStrategy.select(this, herbivoros);
 		}
 		
-		if (_huntTarget == null) {
-			if (_pos.distanceTo(_dest) < Const.COLLISION_RANGE) {
-				double x = Utils.RAND.nextDouble() * _regionMngr.getWidth();
-				double y = Utils.RAND.nextDouble() * _regionMngr.getHeight();
-				_dest = new Vector2D(x, y);
+		if (huntTarget == null) {
+			if (pos.distanceTo(dest) < Const.COLLISION_RANGE) {
+				double x = Utils.RAND.nextDouble() * regionMngr.getWidth();
+				double y = Utils.RAND.nextDouble() * regionMngr.getHeight();
+				dest = new Vector2D(x, y);
 			}
 
-			double v = _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
+			double v = speed * dt * Math.exp((energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 			move(v);
 
-			_age += dt;
+			age += dt;
 
-			_energy -= Const.FOOD_DROP_RATE_WOLF * dt;
-			_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
+			energy -= Const.FOOD_DROP_RATE_WOLF * dt;
+			energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
 
-			_desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
-			_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
+			desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
+			desire = Utils.constrainValueInRange(desire, 0.0, Const.MAX_DESIRE);
 		} else {
-			_dest = _huntTarget.getPosition();
+			dest = huntTarget.getPosition();
 			
-			double v = Const.BOOST_FACTOR_WOLF * _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
+			double v = Const.BOOST_FACTOR_WOLF * speed * dt * Math.exp((energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 			move(v);
 			
-			_age += dt;
+			age += dt;
 			
-			_energy -= Const.FOOD_DROP_RATE_WOLF * Const.FOOD_DROP_BOOST_FACTOR_WOLF * dt;
-			_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
+			energy -= Const.FOOD_DROP_RATE_WOLF * Const.FOOD_DROP_BOOST_FACTOR_WOLF * dt;
+			energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
 			
-			_desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
-			_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
+			desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
+			desire = Utils.constrainValueInRange(desire, 0.0, Const.MAX_DESIRE);
 			
-			if (_pos.distanceTo(_huntTarget.getPosition()) < Const.COLLISION_RANGE) {
+			if (pos.distanceTo(huntTarget.getPosition()) < Const.COLLISION_RANGE) {
 
-				_huntTarget.setState(State.DEAD);
-				_huntTarget = null;
+				huntTarget.setState(State.DEAD);
+				huntTarget = null;
 
-				_energy += Const.FOOD_EAT_VALUE_WOLF;
-				_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
+				energy += Const.FOOD_EAT_VALUE_WOLF;
+				energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
 			}
 		}
 		
-		if (_energy > Const.FOOD_THRSHOLD_WOLF) {
-			if (_desire < Const.DESIRE_THRESHOLD_WOLF) {
+		if (energy > Const.FOOD_THRSHOLD_WOLF) {
+			if (desire < Const.DESIRE_THRESHOLD_WOLF) {
 				setState(State.NORMAL);
 			} else {
 				setState(State.MATE);
@@ -157,89 +157,89 @@ public class Wolf extends Animal {
 	}
 	
 	private void updateMate(double dt) {
-		if (_mateTarget != null) {
-			if (_mateTarget.getState() == State.DEAD || _pos.distanceTo(_mateTarget.getPosition()) > _sightRange) {
-				_mateTarget = null;
+		if (mateTarget != null) {
+			if (mateTarget.getState() == State.DEAD || pos.distanceTo(mateTarget.getPosition()) > sightRange) {
+				mateTarget = null;
 			}
 		}
 		
-		if (_mateTarget == null) {
-			List<Animal> candidatos = _regionMngr.getAnimalsInRange(this, an -> an.getGeneticCode().equals(this.getGeneticCode()));
+		if (mateTarget == null) {
+			List<Animal> candidatos = regionMngr.getAnimalsInRange(this, an -> an.getGeneticCode().equals(this.getGeneticCode()));
 
-			_mateTarget = _mateStrategy.select(this, candidatos);
+			mateTarget = mateStrategy.select(this, candidatos);
 			
-			if (_mateTarget == null) {
-				if (_pos.distanceTo(_dest) < Const.COLLISION_RANGE) {
-					double x = Utils.RAND.nextDouble() * _regionMngr.getWidth();
-					double y = Utils.RAND.nextDouble() * _regionMngr.getHeight();
-					_dest = new Vector2D(x, y);
+			if (mateTarget == null) {
+				if (pos.distanceTo(dest) < Const.COLLISION_RANGE) {
+					double x = Utils.RAND.nextDouble() * regionMngr.getWidth();
+					double y = Utils.RAND.nextDouble() * regionMngr.getHeight();
+					dest = new Vector2D(x, y);
 				}
 
-				double v = _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
+				double v = speed * dt * Math.exp((energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 				move(v);
 
-				_age += dt;
+				age += dt;
 
-				_energy -= Const.FOOD_DROP_RATE_WOLF * dt;
-				_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
+				energy -= Const.FOOD_DROP_RATE_WOLF * dt;
+				energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
 
-				_desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
-				_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
+				desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
+				desire = Utils.constrainValueInRange(desire, 0.0, Const.MAX_DESIRE);
 			}
 		}
 		else {
-			_dest = _mateTarget.getPosition();
+			dest = mateTarget.getPosition();
 			
-			double v = Const.BOOST_FACTOR_WOLF * _speed * dt * Math.exp((_energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
+			double v = Const.BOOST_FACTOR_WOLF * speed * dt * Math.exp((energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
 			move(v);
 			
-			_age += dt;
+			age += dt;
 			
-			_energy -= Const.FOOD_DROP_RATE_WOLF * Const.FOOD_DROP_BOOST_FACTOR_WOLF * dt;
-			_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
+			energy -= Const.FOOD_DROP_RATE_WOLF * Const.FOOD_DROP_BOOST_FACTOR_WOLF * dt;
+			energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
 			
-			_desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
-			_desire = Utils.constrainValueInRange(_desire, 0.0, Const.MAX_DESIRE);
+			desire += Const.DESIRE_INCREASE_RATE_WOLF * dt;
+			desire = Utils.constrainValueInRange(desire, 0.0, Const.MAX_DESIRE);
 			
-			if (_pos.distanceTo(_mateTarget.getPosition()) < Const.COLLISION_RANGE) {
-				_desire = 0.0;
-				_mateTarget._desire = 0.0;
+			if (pos.distanceTo(mateTarget.getPosition()) < Const.COLLISION_RANGE) {
+				desire = 0.0;
+				mateTarget.desire = 0.0;
 				
 				if (!this.isPregnant()) {
 					if (Utils.RAND.nextDouble() < Const.PREGNANT_PROBABILITY_WOLF) {
-						_baby = new Wolf(this, _mateTarget);
+						baby = new Wolf(this, mateTarget);
 					}
 				}
 				
-				_energy -= Const.FOOD_DROP_DESIRE_WOLF;
-				_energy = Utils.constrainValueInRange(_energy, 0.0, Const.MAX_ENERGY);
+				energy -= Const.FOOD_DROP_DESIRE_WOLF;
+				energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
 				
-				_mateTarget = null;
+				mateTarget = null;
 			}
 		}
 		
-		if (_energy < Const.FOOD_THRSHOLD_WOLF) {
+		if (energy < Const.FOOD_THRSHOLD_WOLF) {
 			setState(State.HUNGER);
 		}
-		else if (_desire < Const.DESIRE_THRESHOLD_WOLF) {
+		else if (desire < Const.DESIRE_THRESHOLD_WOLF) {
 			setState(State.NORMAL);
 		}
 	}
 
 	@Override
 	protected void setNormalStateAction() {
-		_huntTarget = null;
-		_mateTarget = null;
+		huntTarget = null;
+		mateTarget = null;
 	}
 
 	@Override
 	protected void setMateStateAction() {
-		_huntTarget = null;
+		huntTarget = null;
 	}
 
 	@Override
 	protected void setHungerStateAction() {
-		_mateTarget = null;
+		mateTarget = null;
 	}
 
 	@Override
@@ -248,7 +248,7 @@ public class Wolf extends Animal {
 
 	@Override
 	protected void setDeadStateAction() {
-		_huntTarget = null;
-		_mateTarget = null;
+		huntTarget = null;
+		mateTarget = null;
 	}
 }

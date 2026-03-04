@@ -4,8 +4,8 @@ import simulator.misc.Utils;
 
 public class DynamicSupplyRegion extends Region {
 
-	private double _actualFood;
-	private double _growthFactor;
+	private double actualFood;
+	private double growthFactor;
 	
 
 	public DynamicSupplyRegion(double initialFood, double growthFactor) {
@@ -15,14 +15,14 @@ public class DynamicSupplyRegion extends Region {
 		if (growthFactor < 0)
 			throw new IllegalArgumentException(
 					"DynamicSupplyRegion: constructora -> GrowthFactor: no puede ser nagativo");
-		_actualFood = initialFood;
-		_growthFactor = growthFactor;
+		this.actualFood = initialFood;
+		this.growthFactor = growthFactor;
 	}
 
 	@Override
 	public void update(double dt) {
 		if (Utils.RAND.nextDouble() < 0.5) {
-			_actualFood += _growthFactor * dt;
+			actualFood += growthFactor * dt;
 		}
 	}
 
@@ -32,14 +32,14 @@ public class DynamicSupplyRegion extends Region {
 			return 0.0;
 		}
 		int n = getN();
-		double amount = Math.min(_actualFood, Const.FOOD_EAT_RATE_HERBS * Math.exp(-Math.max(0, n - Const.FOOD_SHORTAGE_TH_HERBS) * Const.FOOD_SHORTAGE_EXP_HERBS) * dt);
-		_actualFood -= amount;
+		double amount = Math.min(actualFood, Const.FOOD_EAT_RATE_HERBS * Math.exp(-Math.max(0, n - Const.FOOD_SHORTAGE_TH_HERBS) * Const.FOOD_SHORTAGE_EXP_HERBS) * dt);
+		actualFood -= amount;
 		return amount;
 	}
 
 	private int getN() {
 		int n = 0;
-		for (Animal animal : _animals) {
+		for (Animal animal : animals) {
 			if (animal.getDiet() == Diet.HERBIVORE) {
 				n++;
 			}

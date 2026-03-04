@@ -8,31 +8,31 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public abstract class Region implements Entity, FoodSupplier, RegionInfo {
-	protected List<Animal> _animals;
+	protected List<Animal> animals;
 
 	public Region() {
-		_animals = new ArrayList<>();
+		this.animals = new ArrayList<>();
 	}
 
 	final void addAnimal(Animal a) {
-		_animals.add(a);
+		animals.add(a);
 	}
 
 	final void removeAnimal(Animal a) {
-		_animals.remove(a);
+		animals.remove(a);
 	}
 
 	final List<Animal> getAnimals() { //
-		return Collections.unmodifiableList(_animals);
+		return Collections.unmodifiableList(animals);
 	}
 
 	public JSONObject asJSON() {
 		JSONObject json = new JSONObject();
-		JSONArray animals = new JSONArray();
-		for (Animal a : _animals) {
-			animals.put(a.asJSON());
+		JSONArray jsArray = new JSONArray();
+		for (Animal a : animals) {
+			jsArray.put(a.asJSON());
 		}
-		json.put("animals", animals);
+		json.put("animals", jsArray);
 		return json;
 	}
 }
