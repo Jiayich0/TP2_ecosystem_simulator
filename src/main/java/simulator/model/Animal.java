@@ -148,6 +148,98 @@ public abstract class Animal implements Entity, AnimalInfo {
 		json.put("state", state.toString());
 		return json;
 	}
+	
+	//=======================================
+	//				REFACTOR
+	//=======================================
+	@Override
+	public final void update(double dt) {
+		if (state == State.DEAD) {
+			return;
+		}
+		
+		updateAnimal(dt);
+		
+		if (wrap()) {
+			setState(State.NORMAL);
+		}
+		
+		if (energy <= 0.0 || age > getMaxAge()) {
+			setState(State.DEAD);
+			return;
+		}
+		
+		double food = regionMngr.getFood(this, dt);
+		energy = energy + food;
+		energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
+	}
+	
+	protected abstract void updateAnimal(double dt);
+	
+	protected abstract double getMaxAge();
+	
+	private boolean wrap() {
+	    double width = regionMngr.getWidth();
+	    double height = regionMngr.getHeight();
+	    double x = pos.getX();
+	    double y = pos.getY();
+
+	    if (x >= 0 && x < width && y >= 0 && y < height) return false;
+
+	    while (x >= width) x -= width;
+	    while (x < 0) x += width;
+	    while (y >= height) y -= height;
+	    while (y < 0) y += height;
+
+	    pos = new Vector2D(x, y);
+	    return true;
+	}
+	
+	protected final void advanceRandomDest(double dt,  double foodDropRate, double desireIncreaseRate) {
+		// i. dest cerca (8.0) -> dest random
+		if (pos.distanceTo(dest) < Const.COLLISION_RANGE) {
+			double x = Utils.RAND.nextDouble() * regionMngr.getWidth();
+			double y = Utils.RAND.nextDouble() * regionMngr.getHeight();
+
+			dest = new Vector2D(x, y);
+		}
+		
+		// ii. llama a move
+		double v = speed * dt * Math.exp((energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
+		move(v);
+		
+		// iii. sumar edad
+		age += dt;
+		
+		// iv. quitar energía
+		energy -= foodDropRate * dt;
+		energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
+		
+		// v. aumentar deseo
+		desire += desireIncreaseRate * dt;
+		desire = Utils.constrainValueInRange(desire, 0.0, Const.MAX_DESIRE);
+	}
+	
+	protected final void advanceDest(double dt, double boostFactor, double foodDropBoostFactor, double foodDropRate, double desireIncreaseRate) {
+		// i. llama a move
+		double v = boostFactor * speed * dt * Math.exp((energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
+		move(v);
+		
+		// ii. sumar edad
+		age += dt;
+		
+		// iii. quitar energía
+		energy -= foodDropRate * foodDropBoostFactor* dt;
+		energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
+		
+		// iv. aumentar deseo
+		desire += desireIncreaseRate * dt;
+		desire = Utils.constrainValueInRange(desire, 0.0, Const.MAX_DESIRE);
+	}
+	
+	
+	//=======================================	
+	//=======================================
 
 	// getters
 	@Override
