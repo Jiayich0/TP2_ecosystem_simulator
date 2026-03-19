@@ -170,8 +170,7 @@ public abstract class Animal implements Entity, AnimalInfo {
 		}
 		
 		double food = regionMngr.getFood(this, dt);
-		energy = energy + food;
-		energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
+		changeEnergy(food);
 	}
 	
 	protected abstract void updateAnimal(double dt);
@@ -204,40 +203,41 @@ public abstract class Animal implements Entity, AnimalInfo {
 			dest = new Vector2D(x, y);
 		}
 		
-		// ii. llama a move
-		double v = speed * dt * Math.exp((energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
-		move(v);
-		
-		// iii. sumar edad
-		age += dt;
-		
-		// iv. quitar energía
-		energy -= foodDropRate * dt;
-		energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
-		
-		// v. aumentar deseo
-		desire += desireIncreaseRate * dt;
-		desire = Utils.constrainValueInRange(desire, 0.0, Const.MAX_DESIRE);
+		move(speed * dt * Math.exp((energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR));
+		increaseAge(dt);
+		changeEnergy(-foodDropRate * dt);
+		changeDesire(desireIncreaseRate * dt);
 	}
 	
 	protected final void advanceDest(double dt, double boostFactor, double foodDropBoostFactor, double foodDropRate, double desireIncreaseRate) {
-		// i. llama a move
-		double v = boostFactor * speed * dt * Math.exp((energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR);
-		move(v);
-		
-		// ii. sumar edad
-		age += dt;
-		
-		// iii. quitar energía
-		energy -= foodDropRate * foodDropBoostFactor* dt;
-		energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
-		
-		// iv. aumentar deseo
-		desire += desireIncreaseRate * dt;
-		desire = Utils.constrainValueInRange(desire, 0.0, Const.MAX_DESIRE);
+		move(boostFactor * speed * dt * Math.exp((energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR));
+		increaseAge(dt);
+		changeEnergy(-foodDropRate * foodDropBoostFactor* dt);
+		changeDesire(desireIncreaseRate * dt);
 	}
 	
+	protected final void changeEnergy(double amount) {
+		energy = Utils.constrainValueInRange(energy + amount, 0.0, Const.MAX_ENERGY);
+	}
 	
+	protected final void changeDesire(double amount) {
+		desire = Utils.constrainValueInRange(desire + amount, 0.0, Const.MAX_DESIRE);
+	}
+	
+	protected final void resetDesire() {
+		desire = 0.0;
+	}
+	
+	protected final void increaseAge(double dt) {
+		age += dt;
+	}
+	
+	protected final void resetMateDesire() {
+		desire = 0.0;
+		if (mateTarget != null) {
+			mateTarget.desire = 0.0;
+		}
+	}
 	//=======================================	
 	//=======================================
 

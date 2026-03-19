@@ -75,8 +75,7 @@ public class Wolf extends Animal {
 				huntTarget.setState(State.DEAD);
 				huntTarget = null;
 
-				energy += Const.FOOD_EAT_VALUE_WOLF;
-				energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
+				changeEnergy(Const.FOOD_EAT_VALUE_WOLF);
 			}
 		}
 		
@@ -110,8 +109,7 @@ public class Wolf extends Animal {
 			advanceDest(dt, Const.BOOST_FACTOR_WOLF, Const.FOOD_DROP_BOOST_FACTOR_WOLF, Const.FOOD_DROP_RATE_WOLF, Const.DESIRE_INCREASE_RATE_WOLF);
 			
 			if (pos.distanceTo(mateTarget.getPosition()) < Const.COLLISION_RANGE) {
-				desire = 0.0;
-				mateTarget.desire = 0.0;
+				resetMateDesire();
 				
 				if (!this.isPregnant()) {
 					if (Utils.RAND.nextDouble() < Const.PREGNANT_PROBABILITY_WOLF) {
@@ -119,8 +117,7 @@ public class Wolf extends Animal {
 					}
 				}
 				
-				energy -= Const.FOOD_DROP_DESIRE_WOLF;
-				energy = Utils.constrainValueInRange(energy, 0.0, Const.MAX_ENERGY);
+				changeEnergy(-Const.FOOD_DROP_DESIRE_WOLF);
 				
 				mateTarget = null;
 			}

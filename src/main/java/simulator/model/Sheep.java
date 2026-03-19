@@ -109,8 +109,7 @@ public class Sheep extends Animal {
 			advanceDest(dt, Const.BOOST_FACTOR_SHEEP, Const.FOOD_DROP_BOOST_FACTOR_SHEEP, Const.FOOD_DROP_RATE_SHEEP, Const.DESIRE_INCREASE_RATE_SHEEP);
 			
 			if (pos.distanceTo(mateTarget.getPosition()) < Const.COLLISION_RANGE) {
-				desire = 0.0;
-				mateTarget.desire = 0.0;
+				resetMateDesire();
 				
 				if (!this.isPregnant()) {
 					if (Utils.RAND.nextDouble() < Const.PREGNANT_PROBABILITY_SHEEP) {
