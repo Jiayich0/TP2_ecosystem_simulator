@@ -21,7 +21,14 @@ public abstract class Animal implements Entity, AnimalInfo {
 	protected Animal baby;
 	protected AnimalMapView regionMngr;
 	protected SelectionStrategy mateStrategy;
+	
+	public enum Diet {
+		HERBIVORE, CARNIVORE
+	}
 
+	public enum State {
+		NORMAL, HUNGER, MATE, DANGER, DEAD
+	}
 
 	protected Animal(String geneticCode, Diet diet, double sightRange, double initSpeed, SelectionStrategy mateStrategy,
 			Vector2D pos) {

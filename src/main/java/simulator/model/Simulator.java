@@ -89,7 +89,7 @@ public class Simulator implements JSONable {
 		
 		for (int i = animals.size() - 1; i >= 0; i--) {
 			Animal a = animals.get(i);
-			if (a.getState() == State.DEAD) {
+			if (a.getState() == Animal.State.DEAD) {
 				regionManager.unregisterAnimal(a);
 				animals.remove(i);
 			}

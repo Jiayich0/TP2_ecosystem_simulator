@@ -3,13 +3,13 @@ package simulator.model;
 import simulator.misc.Vector2D;
 
 public interface AnimalInfo extends JSONable { // Note that it extends JSONable
-	public State getState();
+	public Animal.State getState();
 
 	public Vector2D getPosition();
 
 	public String getGeneticCode();
 
-	public Diet getDiet();
+	public Animal.Diet getDiet();
 
 	public double getSpeed();
 

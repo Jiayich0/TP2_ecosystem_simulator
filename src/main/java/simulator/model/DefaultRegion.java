@@ -10,7 +10,7 @@ public class DefaultRegion extends Region {
 
 	@Override
 	public double getFood(AnimalInfo a, double dt) {
-		if (a.getDiet() == Diet.CARNIVORE) {
+		if (a.getDiet() == Animal.Diet.CARNIVORE) {
 			return 0.0;
 		}
 		int n = getN();
@@ -20,7 +20,7 @@ public class DefaultRegion extends Region {
 	private int getN() {
 		int n = 0;
 		for (Animal animal : animals) {
-			if (animal.getDiet() == Diet.HERBIVORE) {
+			if (animal.getDiet() == Animal.Diet.HERBIVORE) {
 				n++;
 			}
 		}
