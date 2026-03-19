@@ -5,8 +5,8 @@ import org.json.JSONObject;
 
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
-import simulator.model.Animal;
-import simulator.model.SelectionStrategy;
+import simulator.model.animal.Animal;
+import simulator.model.strategy.SelectionStrategy;
 
 public abstract class AnimalBuilder extends Builder<Animal> {
 	

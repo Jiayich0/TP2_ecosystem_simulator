@@ -1,4 +1,4 @@
-package simulator.model;
+package simulator.model.region;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +10,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import simulator.misc.Utils;
+import simulator.model.animal.Animal;
+import simulator.model.animal.AnimalInfo;
 
 public class RegionManager implements AnimalMapView {
 	
@@ -45,7 +47,7 @@ public class RegionManager implements AnimalMapView {
         }
 	}
 	
-	void setRegion(int row, int col, Region r) {
+	public void setRegion(int row, int col, Region r) {
 		Region oldReg = regions[row][col];
 		regions[row][col] = r;
 		
@@ -66,7 +68,7 @@ public class RegionManager implements AnimalMapView {
 		return regions[yReg][xReg];
 	}
 	
-	void registerAnimal(Animal a) {
+	public void registerAnimal(Animal a) {
 		a.init(this);
 		
 		Region reg = getReg(a);
@@ -74,7 +76,7 @@ public class RegionManager implements AnimalMapView {
 		animalRegion.put(a, reg);
 	}
 	
-	void unregisterAnimal(Animal a) {
+	public void unregisterAnimal(Animal a) {
 		Region reg = animalRegion.get(a);
 		if (reg != null) {
 	        reg.removeAnimal(a);
@@ -82,7 +84,7 @@ public class RegionManager implements AnimalMapView {
 		animalRegion.remove(a);
 	}
 	
-	void updateanimalRegion(Animal a) {
+	public void updateanimalRegion(Animal a) {
 		Region newReg = getReg(a);
 		Region oldReg = animalRegion.get(a);
 		
@@ -102,7 +104,7 @@ public class RegionManager implements AnimalMapView {
 		return r.getFood(a, dt);
 	}
 	
-	void updateAllRegions(double dt) {
+	public void updateAllRegions(double dt) {
 		for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
             	regions[i][j].update(dt);

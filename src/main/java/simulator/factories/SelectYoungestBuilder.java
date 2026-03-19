@@ -2,8 +2,8 @@ package simulator.factories;
 
 import org.json.JSONObject;
 
-import simulator.model.SelectYoungest;
-import simulator.model.SelectionStrategy;
+import simulator.model.strategy.SelectYoungest;
+import simulator.model.strategy.SelectionStrategy;
 
 public class SelectYoungestBuilder extends Builder<SelectionStrategy> {
 

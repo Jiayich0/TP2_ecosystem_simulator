@@ -3,9 +3,9 @@ package simulator.factories;
 import org.json.JSONObject;
 
 import simulator.misc.Vector2D;
-import simulator.model.Animal;
-import simulator.model.SelectionStrategy;
-import simulator.model.Sheep;
+import simulator.model.animal.Animal;
+import simulator.model.animal.Sheep;
+import simulator.model.strategy.SelectionStrategy;
 
 public class SheepBuilder extends AnimalBuilder {
 

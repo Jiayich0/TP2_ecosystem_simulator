@@ -1,6 +1,8 @@
-package simulator.model;
+package simulator.model.strategy;
 
 import java.util.List;
+
+import simulator.model.animal.Animal;
 
 public class SelectFirst implements SelectionStrategy {
 

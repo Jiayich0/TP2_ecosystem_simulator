@@ -1,4 +1,4 @@
-package simulator.model;
+package simulator.model.region;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import simulator.model.Entity;
+import simulator.model.animal.Animal;
 
 public abstract class Region implements Entity, FoodSupplier, RegionInfo {
 	protected List<Animal> animals;

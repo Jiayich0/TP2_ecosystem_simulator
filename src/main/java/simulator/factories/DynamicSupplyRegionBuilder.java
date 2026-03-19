@@ -3,8 +3,8 @@ package simulator.factories;
 import org.json.JSONObject;
 
 import simulator.model.Const;
-import simulator.model.DynamicSupplyRegion;
-import simulator.model.Region;
+import simulator.model.region.DynamicSupplyRegion;
+import simulator.model.region.Region;
 
 public class DynamicSupplyRegionBuilder extends Builder<Region> {
 

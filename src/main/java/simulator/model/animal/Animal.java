@@ -1,9 +1,13 @@
-package simulator.model;
+package simulator.model.animal;
 
 import org.json.JSONObject;
 
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
+import simulator.model.Const;
+import simulator.model.Entity;
+import simulator.model.region.AnimalMapView;
+import simulator.model.strategy.SelectionStrategy;
 
 public abstract class Animal implements Entity, AnimalInfo {
 

@@ -2,8 +2,8 @@ package simulator.factories;
 
 import org.json.JSONObject;
 
-import simulator.model.SelectClosest;
-import simulator.model.SelectionStrategy;
+import simulator.model.strategy.SelectClosest;
+import simulator.model.strategy.SelectionStrategy;
 
 public class SelectClosestBuilder extends Builder<SelectionStrategy> {
 

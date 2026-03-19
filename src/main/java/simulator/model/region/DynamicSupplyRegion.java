@@ -1,6 +1,9 @@
-package simulator.model;
+package simulator.model.region;
 
 import simulator.misc.Utils;
+import simulator.model.Const;
+import simulator.model.animal.Animal;
+import simulator.model.animal.AnimalInfo;
 
 public class DynamicSupplyRegion extends Region {
 

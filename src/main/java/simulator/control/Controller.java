@@ -8,9 +8,9 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import simulator.model.AnimalInfo;
-import simulator.model.MapInfo;
 import simulator.model.Simulator;
+import simulator.model.animal.AnimalInfo;
+import simulator.model.region.MapInfo;
 import simulator.view.SimpleObjectViewer;
 import simulator.view.SimpleObjectViewer.ObjInfo;
 

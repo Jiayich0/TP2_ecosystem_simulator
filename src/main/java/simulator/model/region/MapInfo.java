@@ -1,4 +1,6 @@
-package simulator.model;
+package simulator.model.region;
+
+import simulator.model.JSONable;
 
 public interface MapInfo extends JSONable {
 	public int getCols();

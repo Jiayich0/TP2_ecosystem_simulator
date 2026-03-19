@@ -7,6 +7,11 @@ import java.util.List;
 import org.json.JSONObject;
 
 import simulator.factories.Factory;
+import simulator.model.animal.Animal;
+import simulator.model.animal.AnimalInfo;
+import simulator.model.region.MapInfo;
+import simulator.model.region.Region;
+import simulator.model.region.RegionManager;
 
 public class Simulator implements JSONable {
 	
