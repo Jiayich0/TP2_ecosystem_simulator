@@ -15,12 +15,12 @@ import simulator.view.SimpleObjectViewer;
 import simulator.view.SimpleObjectViewer.ObjInfo;
 
 public class Controller {
-	private Simulator _sim;
+	private Simulator sim;
 
 	public Controller (Simulator sim) {
 		if (sim == null)
 			throw new IllegalArgumentException("Controller: constructor: sim es nulo");
-		_sim = sim;
+		this.sim = sim;
 	}
 
 	public void loadData(JSONObject data) {
@@ -45,7 +45,7 @@ public class Controller {
 
 				for (int r = rf; r <= rt; r++) {
 					for (int c = cf; c <= ct; c++) {
-						_sim.setRegion(r, c, spec);
+						sim.setRegion(r, c, spec);
 					}
 				}
 			}
@@ -63,7 +63,7 @@ public class Controller {
 			
 			JSONObject spec = a.getJSONObject("spec");
 			for (int j = 0; j < amount; j++) {
-				_sim.addAnimal(spec);
+				sim.addAnimal(spec);
 			}
 		}
 	}
@@ -76,25 +76,25 @@ public class Controller {
 		if (dt <= 0)
 			throw new IllegalArgumentException("Controller: run: dt debe ser > 0");
 		
-		JSONObject initState = _sim.asJSON();
+		JSONObject initState = sim.asJSON();
 		
 		SimpleObjectViewer view = null;
 		if (sv) {
-			MapInfo m = _sim.getMapInfo();
+			MapInfo m = sim.getMapInfo();
 			view = new SimpleObjectViewer("[ECOSYSTEM]", m.getWidth(), m.getHeight(), m.getCols(), m.getRows());
-			view.update(toAnimalsInfo(_sim.getAnimals()), _sim.getTime(), dt);
+			view.update(toAnimalsInfo(sim.getAnimals()), sim.getTime(), dt);
 		}
 		
 		
-		while (_sim.getTime() <= t) {
-			_sim.advance(dt);
-			if (sv) view.update(toAnimalsInfo(_sim.getAnimals()), _sim.getTime(), dt);
+		while (sim.getTime() <= t) {
+			sim.advance(dt);
+			if (sv) view.update(toAnimalsInfo(sim.getAnimals()), sim.getTime(), dt);
 		}
 		
 		if (sv)
 			view.close();
 		
-		JSONObject finalState = _sim.asJSON();
+		JSONObject finalState = sim.asJSON();
 		
 		JSONObject output = new JSONObject();
 		output.put("in", initState);
