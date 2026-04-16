@@ -25,7 +25,7 @@ public abstract class Animal implements Entity, AnimalInfo {
 	protected Animal baby;
 	protected AnimalMapView regionMngr;
 	protected SelectionStrategy mateStrategy;
-	
+
 	public enum Diet {
 		HERBIVORE, CARNIVORE
 	}
@@ -73,18 +73,19 @@ public abstract class Animal implements Entity, AnimalInfo {
 		this.diet = p1.diet;
 		this.mateStrategy = p2.mateStrategy;
 		this.energy = (p1.energy + p2.energy) / 2;
-		this.pos = p1.getPosition().plus(Vector2D.get_random_vector(-1, 1).scale(Const.NEARBY_FACTOR * (Utils.RAND.nextGaussian() + 1)));
-		this.sightRange = Utils.getRandomizedParameter((p1.getSightRange() + p2.getSightRange()) / 2, Const.MUTATION_TOLERANCE);
+		this.pos = p1.getPosition()
+				.plus(Vector2D.get_random_vector(-1, 1).scale(Const.NEARBY_FACTOR * (Utils.RAND.nextGaussian() + 1)));
+		this.sightRange = Utils.getRandomizedParameter((p1.getSightRange() + p2.getSightRange()) / 2,
+				Const.MUTATION_TOLERANCE);
 		this.speed = Utils.getRandomizedParameter((p1.getSpeed() + p2.getSpeed()) / 2, Const.MUTATION_TOLERANCE);
 	}
 
-	
 	public void init(AnimalMapView regMngr) {
 		regionMngr = regMngr;
 
 		double width = regionMngr.getWidth();
 		double height = regionMngr.getHeight();
-		
+
 		// random pos
 		if (pos == null) {
 			double x = Utils.RAND.nextDouble() * width;
@@ -93,15 +94,19 @@ public abstract class Animal implements Entity, AnimalInfo {
 		} else { // si cae fuera del mapa
 			double x = pos.getX();
 			double y = pos.getY();
-			
-			while (x >= width) x = (x - width);
-			while (x < 0) x = (x + width);
-			while (y >= height) y = (y - height);
-			while (y < 0) y = (y + height);
+
+			while (x >= width)
+				x = (x - width);
+			while (x < 0)
+				x = (x + width);
+			while (y >= height)
+				y = (y - height);
+			while (y < 0)
+				y = (y + height);
 
 			pos = new Vector2D(x, y);
 		}
-		
+
 		// random dest
 		double x = Utils.RAND.nextDouble() * width;
 		double y = Utils.RAND.nextDouble() * height;
@@ -159,53 +164,58 @@ public abstract class Animal implements Entity, AnimalInfo {
 		json.put("state", state.toString());
 		return json;
 	}
-	
-	//=======================================
-	//				REFACTOR
-	//=======================================
+
+	// =======================================
+	// REFACTOR
+	// =======================================
 	@Override
 	public final void update(double dt) {
 		if (state == State.DEAD) {
 			return;
 		}
-		
+
 		updateAnimal(dt);
-		
+
 		if (wrap()) {
 			setState(State.NORMAL);
 		}
-		
+
 		if (energy <= 0.0 || age > getMaxAge()) {
 			setState(State.DEAD);
 			return;
 		}
-		
+
 		double food = regionMngr.getFood(this, dt);
 		changeEnergy(food);
 	}
-	
+
 	protected abstract void updateAnimal(double dt);
-	
+
 	protected abstract double getMaxAge();
-	
+
 	private boolean wrap() {
-	    double width = regionMngr.getWidth();
-	    double height = regionMngr.getHeight();
-	    double x = pos.getX();
-	    double y = pos.getY();
+		double width = regionMngr.getWidth();
+		double height = regionMngr.getHeight();
+		double x = pos.getX();
+		double y = pos.getY();
 
-	    if (x >= 0 && x < width && y >= 0 && y < height) return false;
+		if (x >= 0 && x < width && y >= 0 && y < height)
+			return false;
 
-	    while (x >= width) x -= width;
-	    while (x < 0) x += width;
-	    while (y >= height) y -= height;
-	    while (y < 0) y += height;
+		while (x >= width)
+			x -= width;
+		while (x < 0)
+			x += width;
+		while (y >= height)
+			y -= height;
+		while (y < 0)
+			y += height;
 
-	    pos = new Vector2D(x, y);
-	    return true;
+		pos = new Vector2D(x, y);
+		return true;
 	}
-	
-	protected final void advanceRandomDest(double dt,  double foodDropRate, double desireIncreaseRate) {
+
+	protected final void advanceRandomDest(double dt, double foodDropRate, double desireIncreaseRate) {
 		// i. dest cerca (8.0) -> dest random
 		if (pos.distanceTo(dest) < Const.COLLISION_RANGE) {
 			double x = Utils.RAND.nextDouble() * regionMngr.getWidth();
@@ -213,44 +223,45 @@ public abstract class Animal implements Entity, AnimalInfo {
 
 			dest = new Vector2D(x, y);
 		}
-		
+
 		move(speed * dt * Math.exp((energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR));
 		increaseAge(dt);
 		changeEnergy(-foodDropRate * dt);
 		changeDesire(desireIncreaseRate * dt);
 	}
-	
-	protected final void advanceDest(double dt, double boostFactor, double foodDropBoostFactor, double foodDropRate, double desireIncreaseRate) {
+
+	protected final void advanceDest(double dt, double boostFactor, double foodDropBoostFactor, double foodDropRate,
+			double desireIncreaseRate) {
 		move(boostFactor * speed * dt * Math.exp((energy - Const.MAX_ENERGY) * Const.HUNGER_DECAY_EXP_FACTOR));
 		increaseAge(dt);
-		changeEnergy(-foodDropRate * foodDropBoostFactor* dt);
+		changeEnergy(-foodDropRate * foodDropBoostFactor * dt);
 		changeDesire(desireIncreaseRate * dt);
 	}
-	
+
 	protected final void changeEnergy(double amount) {
 		energy = Utils.constrainValueInRange(energy + amount, 0.0, Const.MAX_ENERGY);
 	}
-	
+
 	protected final void changeDesire(double amount) {
 		desire = Utils.constrainValueInRange(desire + amount, 0.0, Const.MAX_DESIRE);
 	}
-	
+
 	protected final void resetDesire() {
 		desire = 0.0;
 	}
-	
+
 	protected final void increaseAge(double dt) {
 		age += dt;
 	}
-	
+
 	protected final void resetMateDesire() {
 		desire = 0.0;
 		if (mateTarget != null) {
 			mateTarget.desire = 0.0;
 		}
 	}
-	//=======================================	
-	//=======================================
+	// =======================================
+	// =======================================
 
 	// getters
 	@Override

@@ -9,19 +9,20 @@ import simulator.model.animal.Animal;
 import simulator.model.strategy.SelectionStrategy;
 
 public abstract class AnimalBuilder extends Builder<Animal> {
-	
+
 	protected Factory<SelectionStrategy> strategyFactory;
-	
+
 	protected AnimalBuilder(String type, String desc, Factory<SelectionStrategy> strategyFactory) {
 		super(type, desc);
 		if (strategyFactory == null)
 			throw new IllegalArgumentException("AnimalBuilder: strategyFactory es nulo");
 		this.strategyFactory = strategyFactory;
 	}
-	
+
 	@Override
-	protected void fillInData(JSONObject o) { }
-	
+	protected void fillInData(JSONObject o) {
+	}
+
 	protected SelectionStrategy parseStrategy(JSONObject data, String key) {
 		if (data.has(key)) {
 			JSONObject strategyData = data.getJSONObject(key);
@@ -42,7 +43,7 @@ public abstract class AnimalBuilder extends Builder<Animal> {
 
 		JSONArray xR = posObj.getJSONArray("x_range");
 		JSONArray yR = posObj.getJSONArray("y_range");
-		
+
 		if (xR.length() != 2 || yR.length() != 2)
 			throw new IllegalArgumentException("AnimalBuilder: x_range/y_range deben tener 2 valores");
 

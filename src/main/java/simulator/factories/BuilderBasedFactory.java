@@ -36,10 +36,10 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 		if (info == null) {
 			throw new IllegalArgumentException("’info’ cannot be null");
 		}
-		
+
 		String type = info.getString("type");
 		Builder<T> b = builders.get(type);
-		
+
 		if (b != null) {
 			JSONObject data = info.has("data") ? info.getJSONObject("data") : new JSONObject();
 			T o = b.createInstance(data);
@@ -47,7 +47,7 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 				return o;
 			}
 		}
-		
+
 		throw new IllegalArgumentException("Unrecognized ‘info’:" + info.toString());
 	}
 

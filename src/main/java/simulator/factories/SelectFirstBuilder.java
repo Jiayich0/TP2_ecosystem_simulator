@@ -15,7 +15,7 @@ public class SelectFirstBuilder extends Builder<SelectionStrategy> {
 	protected SelectionStrategy createInstance(JSONObject data) {
 		if (data == null)
 			throw new IllegalArgumentException("SelectFirstBuilder: createInstance: data es nulo");
-		
+
 		return new SelectFirst();
 	}
 }

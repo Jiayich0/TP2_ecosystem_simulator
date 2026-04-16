@@ -5,8 +5,7 @@ import simulator.model.animal.Animal;
 import simulator.model.animal.AnimalInfo;
 
 public class DefaultRegion extends Region {
-	
-	
+
 	@Override
 	public void update(double dt) {
 		// nada
@@ -18,7 +17,8 @@ public class DefaultRegion extends Region {
 			return 0.0;
 		}
 		int n = getN();
-		return Const.FOOD_EAT_RATE_HERBS * Math.exp(-Math.max(0, n - Const.FOOD_SHORTAGE_TH_HERBS) * Const.FOOD_SHORTAGE_EXP_HERBS) * dt;
+		return Const.FOOD_EAT_RATE_HERBS
+				* Math.exp(-Math.max(0, n - Const.FOOD_SHORTAGE_TH_HERBS) * Const.FOOD_SHORTAGE_EXP_HERBS) * dt;
 	}
 
 	private int getN() {
@@ -29,5 +29,10 @@ public class DefaultRegion extends Region {
 			}
 		}
 		return n;
+	}
+
+	@Override
+	public String toString() {
+		return "Infinite food supply";
 	}
 }

@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import simulator.model.Entity;
 import simulator.model.animal.Animal;
+import simulator.model.animal.AnimalInfo;
 
 public abstract class Region implements Entity, FoodSupplier, RegionInfo {
 	protected List<Animal> animals;
@@ -27,6 +28,10 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo {
 
 	final List<Animal> getAnimals() { //
 		return Collections.unmodifiableList(animals);
+	}
+
+	public List<AnimalInfo> getAnimalsInfo() {
+		return new ArrayList<>(animals); // se puede usar Collections.unmodifiableList(animals);
 	}
 
 	public JSONObject asJSON() {

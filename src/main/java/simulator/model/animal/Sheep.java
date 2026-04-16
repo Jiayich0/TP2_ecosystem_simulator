@@ -11,10 +11,10 @@ public class Sheep extends Animal {
 
 	private Animal dangerSource;
 	private SelectionStrategy dangerStrategy;
-	
 
 	public Sheep(SelectionStrategy mateStrategy, SelectionStrategy dangerStrategy, Vector2D pos) {
-		super(Const.SHEEP_GENETIC_CODE, Diet.HERBIVORE, Const.INIT_SIGHT_SHEEP, Const.INIT_SPEED_SHEEP, mateStrategy, pos);
+		super(Const.SHEEP_GENETIC_CODE, Diet.HERBIVORE, Const.INIT_SIGHT_SHEEP, Const.INIT_SPEED_SHEEP, mateStrategy,
+				pos);
 		if (dangerStrategy == null)
 			throw new IllegalArgumentException("Sheep: constructora -> dangerStrategy: no puede ser nulo");
 		this.dangerStrategy = dangerStrategy;
@@ -43,15 +43,15 @@ public class Sheep extends Animal {
 			break;
 		}
 	}
-	
+
 	@Override
 	protected double getMaxAge() {
-	    return Const.MAX_AGE_SHEEP;
+		return Const.MAX_AGE_SHEEP;
 	}
 
 	private void updateNormal(double dt) {
 		advanceRandomDest(dt, Const.FOOD_DROP_RATE_SHEEP, Const.DESIRE_INCREASE_RATE_SHEEP);
-		
+
 		if (dangerSource == null) {
 			List<Animal> peligros = regionMngr.getAnimalsInRange(this, an -> an.getDiet() == Diet.CARNIVORE);
 			dangerSource = dangerStrategy.select(this, peligros);
@@ -59,8 +59,7 @@ public class Sheep extends Animal {
 
 		if (dangerSource != null) {
 			setState(State.DANGER);
-		}
-		else if (desire > Const.DESIRE_THRESHOLD_SHEEP) {
+		} else if (desire > Const.DESIRE_THRESHOLD_SHEEP) {
 			setState(State.MATE);
 		}
 	}
@@ -69,15 +68,16 @@ public class Sheep extends Animal {
 		if (dangerSource != null && dangerSource.getState() == State.DEAD) {
 			dangerSource = null;
 		}
-		
+
 		if (dangerSource == null) {
 			advanceRandomDest(dt, Const.FOOD_DROP_RATE_SHEEP, Const.DESIRE_INCREASE_RATE_SHEEP);
 		} else {
 			// dirección contraria
 			dest = pos.plus(pos.minus(dangerSource.getPosition()).direction());
-			advanceDest(dt, Const.BOOST_FACTOR_SHEEP, Const.FOOD_DROP_BOOST_FACTOR_SHEEP, Const.FOOD_DROP_RATE_SHEEP, Const.DESIRE_INCREASE_RATE_SHEEP);
+			advanceDest(dt, Const.BOOST_FACTOR_SHEEP, Const.FOOD_DROP_BOOST_FACTOR_SHEEP, Const.FOOD_DROP_RATE_SHEEP,
+					Const.DESIRE_INCREASE_RATE_SHEEP);
 		}
-		
+
 		if (dangerSource == null || pos.distanceTo(dangerSource.getPosition()) > sightRange) {
 			List<Animal> peligros = regionMngr.getAnimalsInRange(this, an -> an.getDiet() == Diet.CARNIVORE);
 			dangerSource = dangerStrategy.select(this, peligros);
@@ -99,20 +99,21 @@ public class Sheep extends Animal {
 			}
 		}
 		if (mateTarget == null) {
-			List<Animal> candidatos = regionMngr.getAnimalsInRange(this, an -> an.getGeneticCode().equals(this.getGeneticCode()));
+			List<Animal> candidatos = regionMngr.getAnimalsInRange(this,
+					an -> an.getGeneticCode().equals(this.getGeneticCode()));
 			mateTarget = mateStrategy.select(this, candidatos);
-			
+
 			if (mateTarget == null) {
 				advanceRandomDest(dt, Const.FOOD_DROP_RATE_SHEEP, Const.DESIRE_INCREASE_RATE_SHEEP);
 			}
-		}
-		else {
+		} else {
 			dest = mateTarget.getPosition();
-			advanceDest(dt, Const.BOOST_FACTOR_SHEEP, Const.FOOD_DROP_BOOST_FACTOR_SHEEP, Const.FOOD_DROP_RATE_SHEEP, Const.DESIRE_INCREASE_RATE_SHEEP);
-			
+			advanceDest(dt, Const.BOOST_FACTOR_SHEEP, Const.FOOD_DROP_BOOST_FACTOR_SHEEP, Const.FOOD_DROP_RATE_SHEEP,
+					Const.DESIRE_INCREASE_RATE_SHEEP);
+
 			if (pos.distanceTo(mateTarget.getPosition()) < Const.COLLISION_RANGE) {
 				resetMateDesire();
-				
+
 				if (!this.isPregnant()) {
 					if (Utils.RAND.nextDouble() < Const.PREGNANT_PROBABILITY_SHEEP) {
 						baby = new Sheep(this, mateTarget);
@@ -121,16 +122,15 @@ public class Sheep extends Animal {
 				mateTarget = null;
 			}
 		}
-		
+
 		if (dangerSource == null) {
 			List<Animal> peligros = regionMngr.getAnimalsInRange(this, an -> an.getDiet() == Diet.CARNIVORE);
 			dangerSource = dangerStrategy.select(this, peligros);
 		}
-		
+
 		if (dangerSource != null) {
 			setState(State.DANGER);
-		}
-		else if (desire < Const.DESIRE_THRESHOLD_SHEEP) {
+		} else if (desire < Const.DESIRE_THRESHOLD_SHEEP) {
 			setState(State.NORMAL);
 		}
 	}

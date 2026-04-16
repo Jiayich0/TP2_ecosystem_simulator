@@ -57,13 +57,13 @@ public class Main {
 	//
 	private static Double time = null;
 	private static String inFile = null;
-	private static ExecMode mode = ExecMode.BATCH;
-	
-	private static Factory<SelectionStrategy> _selectionStrategyFactory;
-	private static Factory<Animal> _animalFactory;
-	private static Factory<Region> _regionFactory;
-	
-	private static Double dt = DEFAULT_DT;
+	private static ExecMode mode = ExecMode.GUI;
+
+	public static Factory<SelectionStrategy> selectionStrategyFactory;
+	public static Factory<Animal> animalsFactory;
+	public static Factory<Region> regionsFactory;
+
+	public static Double dt = DEFAULT_DT;
 	private static String outFile = null;
 	private static boolean sv = false;
 
@@ -85,7 +85,6 @@ public class Main {
 			parseSvOption(line);
 			parseTimeOption(line);
 
-
 			// if there are some remaining arguments, then something wrong is
 			// provided in the command line!
 			//
@@ -106,18 +105,25 @@ public class Main {
 
 	private static Options buildOptions() {
 		Options cmdLineOptions = new Options();
-		
+
 		cmdLineOptions.addOption(Option.builder("dt").longOpt("delta-time").hasArg()
-	            .desc("A double representing actual time, in seconds, per simulation step. Default value: 0.03.").build());
+				.desc("A double representing actual time, in seconds, per simulation step. Default value: 0.03.")
+				.build());
 		// help
 		cmdLineOptions.addOption(Option.builder("h").longOpt("help").desc("Print this message.").build());
 
 		// input file
 		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("A configuration file.").build());
 		
-	    cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg().desc("Output file, where output is written.").build());
+		/*cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg()
+		.desc("Execution Mode. Possible values: 'batch' (Batch mode), 'gui' (Graphical User Interface mode). Default value: 'gui'.")
+		.build());*/
+		
+		cmdLineOptions.addOption(
+				Option.builder("o").longOpt("output").hasArg().desc("Output file, where output is written.").build());
 
-	    cmdLineOptions.addOption(Option.builder("sv").longOpt("simple-viewer").desc("Show the viewer window in console mode.").build());
+		cmdLineOptions.addOption(
+				Option.builder("sv").longOpt("simple-viewer").desc("Show the viewer window in console mode.").build());
 
 		// steps
 		cmdLineOptions.addOption(Option.builder("t").longOpt("time").hasArg()
@@ -152,17 +158,18 @@ public class Main {
 			throw new ParseException("Invalid value for time: " + t);
 		}
 	}
-	
+
 	private static void parseDtOption(CommandLine line) throws ParseException {
 		String s = line.getOptionValue("dt", DEFAULT_DT.toString());
 		try {
 			dt = Double.parseDouble(s);
-			if (dt <= 0) throw new Exception();
+			if (dt <= 0)
+				throw new Exception();
 		} catch (Exception e) {
 			throw new ParseException("Invalid value for dt: " + s);
 		}
 	}
-	
+
 	private static void parseOutFileOption(CommandLine line) {
 		outFile = line.getOptionValue("o");
 	}
@@ -170,6 +177,18 @@ public class Main {
 	private static void parseSvOption(CommandLine line) {
 		sv = line.hasOption("sv");
 	}
+	
+	/*private static void parseModeOption(CommandLine line) throws ParseException {
+		String m = line.getOptionValue("m", ExecMode.GUI.getTag());
+
+		if (m.equalsIgnoreCase(ExecMode.BATCH.getTag())) {
+			mode = ExecMode.BATCH;
+		} else if (m.equalsIgnoreCase(ExecMode.GUI.getTag())) {
+			mode = ExecMode.GUI;
+		} else {
+			throw new ParseException("Invalid value for mode: " + m);
+		}
+	}*/
 
 	private static void initFactories() {
 		// initialize the strategies factory
@@ -177,19 +196,19 @@ public class Main {
 		selectionStrategyBuilders.add(new SelectFirstBuilder());
 		selectionStrategyBuilders.add(new SelectClosestBuilder());
 		selectionStrategyBuilders.add(new SelectYoungestBuilder());
-		_selectionStrategyFactory = new BuilderBasedFactory<SelectionStrategy>(selectionStrategyBuilders);
-	
-		// initialize the animal factory
-	    List<Builder<Animal>> animalBuilders = new ArrayList<>();
-	    animalBuilders.add(new SheepBuilder(_selectionStrategyFactory));
-	    animalBuilders.add(new WolfBuilder(_selectionStrategyFactory));
-	    _animalFactory = new BuilderBasedFactory<Animal>(animalBuilders);
+		selectionStrategyFactory = new BuilderBasedFactory<SelectionStrategy>(selectionStrategyBuilders);
 
-	    // initialize the region factory
-	    List<Builder<Region>> regionBuilders = new ArrayList<>();
-	    regionBuilders.add(new DefaultRegionBuilder());
-	    regionBuilders.add(new DynamicSupplyRegionBuilder());
-	    _regionFactory = new BuilderBasedFactory<Region>(regionBuilders);
+		// initialize the animal factory
+		List<Builder<Animal>> animalBuilders = new ArrayList<>();
+		animalBuilders.add(new SheepBuilder(selectionStrategyFactory));
+		animalBuilders.add(new WolfBuilder(selectionStrategyFactory));
+		animalsFactory = new BuilderBasedFactory<Animal>(animalBuilders);
+
+		// initialize the region factory
+		List<Builder<Region>> regionBuilders = new ArrayList<>();
+		regionBuilders.add(new DefaultRegionBuilder());
+		regionBuilders.add(new DynamicSupplyRegionBuilder());
+		regionsFactory = new BuilderBasedFactory<Region>(regionBuilders);
 	}
 
 	private static JSONObject loadJSONFile(InputStream in) {
@@ -200,23 +219,21 @@ public class Main {
 		InputStream is = new FileInputStream(new File(inFile));
 		JSONObject jsonObject = loadJSONFile(is);
 		is.close();
-		OutputStream out = (outFile == null)
-				? System.out
-				: new FileOutputStream(new File(outFile));
-		
+		OutputStream out = (outFile == null) ? System.out : new FileOutputStream(new File(outFile));
+
 		int width = jsonObject.getInt("width");
 		int height = jsonObject.getInt("height");
 		int rows = jsonObject.getInt("rows");
 		int cols = jsonObject.getInt("cols");
-		
-		Simulator sim = new Simulator(cols, rows, width, height, _animalFactory, _regionFactory);
-		
+
+		Simulator sim = new Simulator(cols, rows, width, height, animalsFactory, regionsFactory);
+
 		Controller ctrl = new Controller(sim);
-		
+
 		ctrl.loadData(jsonObject);
 
 		ctrl.run(time, dt, sv, out);
-		
+
 		if (outFile != null)
 			out.close();
 	}
@@ -224,7 +241,7 @@ public class Main {
 	private static void start_GUI_mode() throws Exception {
 		throw new UnsupportedOperationException("GUI mode is not ready yet ...");
 	}
-
+	
 	private static void start(String[] args) throws Exception {
 		initFactories();
 		parseArgs(args);

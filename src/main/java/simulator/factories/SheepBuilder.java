@@ -17,11 +17,11 @@ public class SheepBuilder extends AnimalBuilder {
 	protected Animal createInstance(JSONObject data) {
 		if (data == null)
 			throw new IllegalArgumentException("SheepBuilder: data es nulo");
-		
+
 		SelectionStrategy mateStrategy = parseMateStrategy(data);
 		SelectionStrategy dangerStrategy = parseStrategy(data, "danger_strategy");
 		Vector2D pos = parsePos(data);
-		
+
 		return new Sheep(mateStrategy, dangerStrategy, pos);
 	}
 }
