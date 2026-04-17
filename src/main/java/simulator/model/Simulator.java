@@ -26,7 +26,7 @@ public class Simulator implements JSONable, Observable<EcoSysObserver> {
 	private RegionManager regionManager;
 	private List<Animal> animals;
 	private double time;
-	
+
 	private List<EcoSysObserver> observers;
 
 	public Simulator(int cols, int rows, int width, int height, Factory<Animal> animalsFactory,
@@ -45,7 +45,7 @@ public class Simulator implements JSONable, Observable<EcoSysObserver> {
 		this.regionManager = new RegionManager(cols, rows, width, height);
 		this.animals = new ArrayList<>();
 		this.time = 0.0;
-		
+
 		this.observers = new ArrayList<>();
 	}
 
@@ -60,7 +60,7 @@ public class Simulator implements JSONable, Observable<EcoSysObserver> {
 		this.regionManager = new RegionManager(cols, rows, width, height);
 		this.animals = new ArrayList<>();
 		this.time = 0.0;
-		
+
 		notifyOnReset();
 	}
 
@@ -139,7 +139,7 @@ public class Simulator implements JSONable, Observable<EcoSysObserver> {
 		for (Animal b : babies) {
 			addAnimal(b);
 		}
-		
+
 		notifyOnAdvance(dt);
 	}
 
@@ -168,11 +168,11 @@ public class Simulator implements JSONable, Observable<EcoSysObserver> {
 
 		observers.remove(o);
 	}
-	
+
 	private List<AnimalInfo> getAnimalsInfoList() {
 		return new ArrayList<>(animals);
 	}
-	
+
 	private void notifyOnRegister(EcoSysObserver o) {
 		o.onRegister(time, regionManager, getAnimalsInfoList());
 	}

@@ -8,6 +8,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -25,6 +27,7 @@ import simulator.model.Simulator;
 import simulator.model.animal.Animal;
 import simulator.model.region.Region;
 import simulator.model.strategy.SelectionStrategy;
+import simulator.view.MainWindow;
 
 public class Main {
 
@@ -80,6 +83,7 @@ public class Main {
 			CommandLine line = parser.parse(cmdLineOptions, args);
 			parseDtOption(line);
 			parseHelpOption(line, cmdLineOptions);
+			parseModeOption(line); // antes de inFile porque si no puede dar error
 			parseInFileOption(line);
 			parseOutFileOption(line);
 			parseSvOption(line);
@@ -114,11 +118,11 @@ public class Main {
 
 		// input file
 		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("A configuration file.").build());
-		
-		/*cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg()
-		.desc("Execution Mode. Possible values: 'batch' (Batch mode), 'gui' (Graphical User Interface mode). Default value: 'gui'.")
-		.build());*/
-		
+
+		cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg().desc(
+				"Execution Mode. Possible values: 'batch' (Batch mode), 'gui' (Graphical User Interface mode). Default value: 'gui'.")
+				.build());
+
 		cmdLineOptions.addOption(
 				Option.builder("o").longOpt("output").hasArg().desc("Output file, where output is written.").build());
 
@@ -146,6 +150,18 @@ public class Main {
 		inFile = line.getOptionValue("i");
 		if (mode == ExecMode.BATCH && inFile == null) {
 			throw new ParseException("In batch mode an input configuration file is required");
+		}
+	}
+
+	private static void parseModeOption(CommandLine line) throws ParseException {
+		String m = line.getOptionValue("m", ExecMode.GUI.getTag());
+
+		if (m.equalsIgnoreCase(ExecMode.BATCH.getTag())) {
+			mode = ExecMode.BATCH;
+		} else if (m.equalsIgnoreCase(ExecMode.GUI.getTag())) {
+			mode = ExecMode.GUI;
+		} else {
+			throw new ParseException("Invalid value for mode: " + m);
 		}
 	}
 
@@ -177,18 +193,6 @@ public class Main {
 	private static void parseSvOption(CommandLine line) {
 		sv = line.hasOption("sv");
 	}
-	
-	/*private static void parseModeOption(CommandLine line) throws ParseException {
-		String m = line.getOptionValue("m", ExecMode.GUI.getTag());
-
-		if (m.equalsIgnoreCase(ExecMode.BATCH.getTag())) {
-			mode = ExecMode.BATCH;
-		} else if (m.equalsIgnoreCase(ExecMode.GUI.getTag())) {
-			mode = ExecMode.GUI;
-		} else {
-			throw new ParseException("Invalid value for mode: " + m);
-		}
-	}*/
 
 	private static void initFactories() {
 		// initialize the strategies factory
@@ -239,9 +243,30 @@ public class Main {
 	}
 
 	private static void start_GUI_mode() throws Exception {
-		throw new UnsupportedOperationException("GUI mode is not ready yet ...");
+		Simulator sim;
+		Controller ctrl;
+
+		if (inFile != null) {
+			InputStream is = new FileInputStream(new File(inFile));
+			JSONObject jsonObject = loadJSONFile(is);
+			is.close();
+
+			int width = jsonObject.getInt("width");
+			int height = jsonObject.getInt("height");
+			int rows = jsonObject.getInt("rows");
+			int cols = jsonObject.getInt("cols");
+
+			sim = new Simulator(cols, rows, width, height, animalsFactory, regionsFactory);
+			ctrl = new Controller(sim);
+			ctrl.loadData(jsonObject);
+		} else {
+			sim = new Simulator(20, 15, 800, 600, animalsFactory, regionsFactory);
+			ctrl = new Controller(sim);
+		}
+
+		SwingUtilities.invokeAndWait(() -> new MainWindow(ctrl));
 	}
-	
+
 	private static void start(String[] args) throws Exception {
 		initFactories();
 		parseArgs(args);

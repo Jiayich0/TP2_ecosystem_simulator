@@ -29,7 +29,7 @@ public class Controller {
 			throw new IllegalArgumentException("Controller: data es nulo");
 
 		loadRegions(data);
-		
+
 		JSONArray animals = data.getJSONArray("animals");
 
 		for (int i = 0; i < animals.length(); i++) {
@@ -88,11 +88,7 @@ public class Controller {
 			ol.add(new ObjInfo(a.getGeneticCode(), (int) a.getPosition().getX(), (int) a.getPosition().getY(), 8));
 		return ol;
 	}
-	
-	
-	
-	
-	
+
 	public void reset(int cols, int rows, int width, int height) {
 		sim.reset(cols, rows, width, height);
 	}
@@ -115,7 +111,7 @@ public class Controller {
 	public void removeObserver(EcoSysObserver o) {
 		sim.removeObserver(o);
 	}
-	
+
 	private void loadRegions(JSONObject data) {
 		if (data.has("regions")) {
 			JSONArray regions = data.getJSONArray("regions");
