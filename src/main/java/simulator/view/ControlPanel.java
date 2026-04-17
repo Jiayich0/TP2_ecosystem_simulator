@@ -25,7 +25,7 @@ import simulator.control.Controller;
 class ControlPanel extends JPanel {
 
 	private Controller ctrl;
-	// private ChangeRegionsDialog changeRegionsDialog;
+	private ChangeRegionsDialog changeRegionsDialog;
 
 	private JToolBar toolBar;
 	private JFileChooser fc;
@@ -57,16 +57,14 @@ class ControlPanel extends JPanel {
 
 		stopButton.setEnabled(false);
 
-		// TODO Inicializar this.changeRegionsDialog con instancias del diálogo de
-		// cambio
-		// de regiones
+		this.changeRegionsDialog = new ChangeRegionsDialog(this.ctrl);
 
 	}
 
 	private void initToolBar() {
 		this.openButton = createButton("Open", "open", () -> openAction());
-		this.viewerButton = createButton("Viewer", "viewer", () -> noAction());
-		this.regionsButton = createButton("Regions", "regions", () -> noAction());
+		this.viewerButton = createButton("Viewer", "viewer", () -> viewerAction());
+		this.regionsButton = createButton("Regions", "regions", () -> regionsAction());
 		this.runButton = createButton("Run", "run", () -> runAction());
 		this.stopButton = createButton("Stop", "stop", () -> stopAction());
 
@@ -124,12 +122,13 @@ class ControlPanel extends JPanel {
 		}
 	}
 
-	// TODO falta viewAction y regionsAction de momento noAction
-	private void noAction() {
-
+	private void viewerAction() {
+		new MapWindow(ViewUtils.getWindow(this), this.ctrl);
 	}
-	// private void viewAction()
-	// private void regionsAction()
+
+	private void regionsAction() {
+		this.changeRegionsDialog.open(ViewUtils.getWindow(this));
+	}
 
 	private void runAction() {
 		try {

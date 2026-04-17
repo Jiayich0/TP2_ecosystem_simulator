@@ -15,11 +15,9 @@ import simulator.model.region.RegionManager;
 
 public class Simulator implements JSONable, Observable<EcoSysObserver> {
 
-	// TODO pr2
-	private int cols;
-	private int rows;
-	private int width;
-	private int height;
+	@SuppressWarnings("unused")
+	private int cols, rows, width, height;
+
 	private Factory<Animal> animalsFactory;
 	private Factory<Region> regionsFactory;
 

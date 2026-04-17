@@ -1,7 +1,6 @@
 package simulator.view;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -19,7 +18,8 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 
 	private String[] columns;
 	private List<RegionData> regions;
-	// private MapInfo map;
+	@SuppressWarnings("unused")
+	private MapInfo map;
 
 	RegionsTableModel(Controller ctrl) {
 		initTable();

@@ -46,6 +46,7 @@ public class Main {
 			return tag;
 		}
 
+		@SuppressWarnings("unused")
 		public String getDesc() {
 			return desc;
 		}
