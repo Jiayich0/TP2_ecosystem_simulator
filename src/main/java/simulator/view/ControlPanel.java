@@ -67,7 +67,7 @@ class ControlPanel extends JPanel {
 	}
 
 	private void initToolBar() {
-		
+
 		this.openButton = createButton("Open", Const.OPEN_ICON, () -> openAction());
 		this.toolBar.addSeparator();
 		this.viewerButton = createButton("Viewer", Const.VIEWER_ICON, () -> viewerAction());
@@ -75,11 +75,12 @@ class ControlPanel extends JPanel {
 		this.toolBar.addSeparator();
 		this.runButton = createButton("Run", Const.RUN_ICON, () -> runAction());
 		this.stopButton = createButton("Stop", Const.STOP_ICON, () -> stopAction());
-		this.stepsSpinner = createLabeledSpinner("Steps", Const.STEPS_INITIAL_VALUE, Const.STEPS_MIN, Const.STEPS_MAX, Const.STEPS_INCREMENT);
+		this.stepsSpinner = createLabeledSpinner("Steps", Const.STEPS_INITIAL_VALUE, Const.STEPS_MIN, Const.STEPS_MAX,
+				Const.STEPS_INCREMENT);
 		this.deltaTimeText = createLabeledTextField("Delta-Time", String.valueOf(Main.dt), Const.DELTA_TIME_TEXT_COLS);
 		this.toolBar.addSeparator();
 		this.quitButton = createButton("Quit", Const.EXIT_ICON, () -> ViewUtils.quit(this));
-		
+
 	}
 
 	private JButton createButton(String name, String iconPath, Runnable action) {
@@ -95,7 +96,7 @@ class ControlPanel extends JPanel {
 
 		return button;
 	}
-	
+
 	private ImageIcon loadIcon(String iconPath) {
 		URL url = getClass().getClassLoader().getResource(iconPath);
 		if (url == null) {
@@ -103,25 +104,25 @@ class ControlPanel extends JPanel {
 		}
 		return new ImageIcon(url);
 	}
-	
+
 	private JSpinner createLabeledSpinner(String name, int initialValue, int min, int max, int increment) {
 		JLabel label = new JLabel(" " + name + ": ");
 		this.toolBar.add(label);
-		
+
 		JSpinner spinner = new JSpinner(new SpinnerNumberModel(initialValue, min, max, increment));
 		spinner.setPreferredSize(new Dimension(80, spinner.getPreferredSize().height));
 		this.toolBar.add(spinner);
-		
+
 		return spinner;
 	}
-	
+
 	private JTextField createLabeledTextField(String name, String defaultText, int columns) {
 		JLabel label = new JLabel(" " + name + ": ");
 		this.toolBar.add(label);
-		
+
 		JTextField textField = new JTextField(defaultText, columns);
 		this.toolBar.add(textField);
-		
+
 		return textField;
 	}
 
@@ -162,6 +163,13 @@ class ControlPanel extends JPanel {
 
 			int n = (Integer) this.stepsSpinner.getValue();
 			double dt = Double.parseDouble(this.deltaTimeText.getText());
+
+			// -------------------------------------------------------------------------
+			// Ajuste para aproximar la velocidad de simulación a la demo
+			// 5 segundos de demo -> time = 6960
+			// Factor aprox: 5.25
+			// -------------------------------------------------------------------------
+			dt = dt / Const.DEMO_SPEED_FACTOR;
 
 			runSim(n, dt);
 		} catch (Exception e) {
