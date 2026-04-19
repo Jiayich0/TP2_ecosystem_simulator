@@ -132,8 +132,8 @@ public class Main {
 
 		// steps
 		cmdLineOptions.addOption(Option.builder("t").longOpt("time").hasArg()
-				.desc("An real number representing the total simulation time in seconds. Default value: " + Const.DEFAULT_TIME
-						+ ".")
+				.desc("An real number representing the total simulation time in seconds. Default value: "
+						+ Const.DEFAULT_TIME + ".")
 				.build());
 
 		return cmdLineOptions;

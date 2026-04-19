@@ -290,16 +290,17 @@ public class MapViewer extends AbstractMapViewer {
 		// Draw the tag of the visible state, using currState.toString(), if it is not
 		// null.
 		if (currentState != null) {
-			g.setColor(Color.BLACK);
-			g.drawString("State: " + currentState.toString(), 10, height - 20);
+			g.setColor(new Color(170, 24, 162));
+			drawStringWithRect(g, 10, height - 23, "State: " + currentState.toString());
 		}
+		g.setColor(new Color(29, 25, 138));
 
 		// DONE Dibujar la etiqueta del tiempo. Para escribir solo 3 decimales puede
 		// usar String.format("%.3f", time).
 		//
 		// Draw the time. To use only 3 decimals you can use String.format("%.3f",
 		// time).
-		g.drawString("Time: " + String.format("%.3f", time), 10, height - 5);
+		drawStringWithRect(g, 10, height - 5, "Time: " + String.format("%.3f", time));
 
 		// DONE Dibujar la información de todas la especies. Al final de la iteración
 		// poner el contador de la especie correspondiente a 0 (para resetear el cuento)
