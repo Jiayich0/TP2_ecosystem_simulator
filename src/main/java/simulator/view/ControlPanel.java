@@ -68,28 +68,28 @@ class ControlPanel extends JPanel {
 
 	private void initToolBar() {
 
-		this.openButton = createButton("Open", Const.OPEN_ICON, () -> openAction());
+		this.openButton = createButton(Const.OPEN_TOOLTIP, Const.OPEN_ICON, () -> openAction());
 		this.toolBar.addSeparator();
-		this.viewerButton = createButton("Viewer", Const.VIEWER_ICON, () -> viewerAction());
-		this.regionsButton = createButton("Regions", Const.REGIONS_ICON, () -> regionsAction());
+		this.viewerButton = createButton(Const.VIEWER_TOOLTIP, Const.VIEWER_ICON, () -> viewerAction());
+		this.regionsButton = createButton(Const.REGIONS_TOOLTIP, Const.REGIONS_ICON, () -> regionsAction());
 		this.toolBar.addSeparator();
-		this.runButton = createButton("Run", Const.RUN_ICON, () -> runAction());
-		this.stopButton = createButton("Stop", Const.STOP_ICON, () -> stopAction());
-		this.stepsSpinner = createLabeledSpinner("Steps", Const.STEPS_INITIAL_VALUE, Const.STEPS_MIN, Const.STEPS_MAX,
+		this.runButton = createButton(Const.RUN_TOOLTIP, Const.RUN_ICON, () -> runAction());
+		this.stopButton = createButton(Const.STOP_TOOLTIP, Const.STOP_ICON, () -> stopAction());
+		this.stepsSpinner = createLabeledSpinner("Steps", Const.STEPS_TOOLTIP, Const.STEPS_INITIAL_VALUE, Const.STEPS_MIN, Const.STEPS_MAX,
 				Const.STEPS_INCREMENT);
-		this.deltaTimeText = createLabeledTextField("Delta-Time", String.valueOf(Main.dt), Const.DELTA_TIME_TEXT_COLS);
+		this.deltaTimeText = createLabeledTextField("Delta-Time", Const.DELTA_TIME_TOOLTIP, String.valueOf(Main.dt), Const.DELTA_TIME_TEXT_COLS);
 		this.toolBar.addSeparator();
-		this.quitButton = createButton("Quit", Const.EXIT_ICON, () -> ViewUtils.quit(this));
+		this.quitButton = createButton(Const.EXIT_TOOLTIP, Const.EXIT_ICON, () -> ViewUtils.quit(this));
 
 	}
 
-	private JButton createButton(String name, String iconPath, Runnable action) {
+	private JButton createButton(String toolTip, String iconPath, Runnable action) {
 		JButton button = new JButton();
-		button.setToolTipText(name);
+		button.setToolTipText(toolTip);
 		button.setIcon(loadIcon(iconPath));
 		button.addActionListener(e -> action.run());
 
-		if ("Quit".equals(name)) {
+		if (Const.EXIT_TOOLTIP.equals(toolTip)) {
 			this.toolBar.add(Box.createGlue()); // this aligns the button to the right
 		}
 		this.toolBar.add(button);
@@ -105,22 +105,26 @@ class ControlPanel extends JPanel {
 		return new ImageIcon(url);
 	}
 
-	private JSpinner createLabeledSpinner(String name, int initialValue, int min, int max, int increment) {
+	private JSpinner createLabeledSpinner(String name, String toolTip, int initialValue, int min, int max, int increment) {
 		JLabel label = new JLabel(" " + name + ": ");
+		// label.setToolTipText(toolTip);
 		this.toolBar.add(label);
 
 		JSpinner spinner = new JSpinner(new SpinnerNumberModel(initialValue, min, max, increment));
 		spinner.setPreferredSize(new Dimension(80, spinner.getPreferredSize().height));
+		spinner.setToolTipText(toolTip);
 		this.toolBar.add(spinner);
 
 		return spinner;
 	}
 
-	private JTextField createLabeledTextField(String name, String defaultText, int columns) {
+	private JTextField createLabeledTextField(String name, String toolTip, String defaultText, int columns) {
 		JLabel label = new JLabel(" " + name + ": ");
+		// label.setToolTipText(toolTip);
 		this.toolBar.add(label);
 
 		JTextField textField = new JTextField(defaultText, columns);
+		textField.setToolTipText(toolTip);
 		this.toolBar.add(textField);
 
 		return textField;

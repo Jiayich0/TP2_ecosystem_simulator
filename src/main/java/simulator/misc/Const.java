@@ -60,6 +60,15 @@ public final class Const {
 	public final static String RUN_ICON = "icons/run.png";
 	public final static String STOP_ICON = "icons/stop.png";
 	public final static String EXIT_ICON = "icons/exit.png";
+	
+	public final static String OPEN_TOOLTIP = "Load an input file into the simulator";
+	public final static String VIEWER_TOOLTIP = "Map Viewer";
+	public final static String REGIONS_TOOLTIP = "Change Regions";
+	public final static String RUN_TOOLTIP = "Run the simulator";
+	public final static String STOP_TOOLTIP = "Stop the simulator";
+	public final static String STEPS_TOOLTIP = "Simulation steps to run: 1-10000";
+	public final static String DELTA_TIME_TOOLTIP = "Real time (seconds) corresponding to a step";
+	public final static String EXIT_TOOLTIP = "Exit";
 
 	public final static int STEPS_INITIAL_VALUE = 10000;
 	public final static int STEPS_MIN = 1;
