@@ -1,14 +1,17 @@
 package simulator.view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -20,6 +23,8 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import simulator.control.Controller;
+import simulator.launcher.Main;
+import simulator.misc.Const;
 
 @SuppressWarnings("serial")
 class ControlPanel extends JPanel {
@@ -62,42 +67,62 @@ class ControlPanel extends JPanel {
 	}
 
 	private void initToolBar() {
-		this.openButton = createButton("Open", "open", () -> openAction());
-		this.viewerButton = createButton("Viewer", "viewer", () -> viewerAction());
-		this.regionsButton = createButton("Regions", "regions", () -> regionsAction());
-		this.runButton = createButton("Run", "run", () -> runAction());
-		this.stopButton = createButton("Stop", "stop", () -> stopAction());
-
-		// Steps Spinner
-		this.stepsSpinner = new JSpinner(new SpinnerNumberModel(10000, 1, Integer.MAX_VALUE, 100));
-		this.toolBar.add(stepsSpinner);
+		
+		this.openButton = createButton("Open", Const.OPEN_ICON, () -> openAction());
 		this.toolBar.addSeparator();
-
-		// Delta-Time TextField
-		this.deltaTimeText = new JTextField("0.03", 5);
-		this.toolBar.add(deltaTimeText);
+		this.viewerButton = createButton("Viewer", Const.VIEWER_ICON, () -> viewerAction());
+		this.regionsButton = createButton("Regions", Const.REGIONS_ICON, () -> regionsAction());
 		this.toolBar.addSeparator();
-
-		this.quitButton = createButton("Quit", "exit", () -> ViewUtils.quit(this));
+		this.runButton = createButton("Run", Const.RUN_ICON, () -> runAction());
+		this.stopButton = createButton("Stop", Const.STOP_ICON, () -> stopAction());
+		this.stepsSpinner = createLabeledSpinner("Steps", Const.STEPS_INITIAL_VALUE, Const.STEPS_MIN, Const.STEPS_MAX, Const.STEPS_INCREMENT);
+		this.deltaTimeText = createLabeledTextField("Delta-Time", String.valueOf(Main.dt), Const.DELTA_TIME_TEXT_COLS);
+		this.toolBar.addSeparator();
+		this.quitButton = createButton("Quit", Const.EXIT_ICON, () -> ViewUtils.quit(this));
+		
 	}
 
-	private JButton createButton(String name, String icon, Runnable action) {
+	private JButton createButton(String name, String iconPath, Runnable action) {
 		JButton button = new JButton();
 		button.setToolTipText(name);
-		button.setIcon(new ImageIcon("src/main/resources/extra/icons/" + icon + ".png"));
-		// name.toUpercase() y quitar icon pero quit != exit
+		button.setIcon(loadIcon(iconPath));
 		button.addActionListener(e -> action.run());
 
-		if (!"Quit".equals(name)) {
-			this.toolBar.add(button);
-			this.toolBar.addSeparator();
-		} else {
+		if ("Quit".equals(name)) {
 			this.toolBar.add(Box.createGlue()); // this aligns the button to the right
-			this.toolBar.addSeparator();
-			this.toolBar.add(button);
 		}
+		this.toolBar.add(button);
 
 		return button;
+	}
+	
+	private ImageIcon loadIcon(String iconPath) {
+		URL url = getClass().getClassLoader().getResource(iconPath);
+		if (url == null) {
+			throw new IllegalArgumentException("Icon not found: " + iconPath);
+		}
+		return new ImageIcon(url);
+	}
+	
+	private JSpinner createLabeledSpinner(String name, int initialValue, int min, int max, int increment) {
+		JLabel label = new JLabel(" " + name + ": ");
+		this.toolBar.add(label);
+		
+		JSpinner spinner = new JSpinner(new SpinnerNumberModel(initialValue, min, max, increment));
+		spinner.setPreferredSize(new Dimension(80, spinner.getPreferredSize().height));
+		this.toolBar.add(spinner);
+		
+		return spinner;
+	}
+	
+	private JTextField createLabeledTextField(String name, String defaultText, int columns) {
+		JLabel label = new JLabel(" " + name + ": ");
+		this.toolBar.add(label);
+		
+		JTextField textField = new JTextField(defaultText, columns);
+		this.toolBar.add(textField);
+		
+		return textField;
 	}
 
 	private void openAction() {
@@ -171,13 +196,8 @@ class ControlPanel extends JPanel {
 		openButton.setEnabled(!running);
 		runButton.setEnabled(!running);
 		quitButton.setEnabled(!running);
-
-		if (viewerButton != null)
-			viewerButton.setEnabled(!running);
-
-		if (regionsButton != null)
-			regionsButton.setEnabled(!running);
-
+		viewerButton.setEnabled(!running);
+		regionsButton.setEnabled(!running);
 		stepsSpinner.setEnabled(!running);
 		deltaTimeText.setEnabled(!running);
 

@@ -38,7 +38,7 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 		}
 
 		regions = new ArrayList<>();
-		// map = null;
+		map = null;
 	}
 
 	@Override
@@ -80,7 +80,7 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 	}
 
 	private void updateTable(MapInfo map) {
-		// this.map = map;
+		this.map = map;
 		regions.clear();
 
 		for (RegionData d : map) {

@@ -52,5 +52,20 @@ public final class Const {
 	// Main
 	public final static Double DEFAULT_TIME = 10.0; // in seconds
 	public final static Double DEFAULT_DT = 0.03;
-
+	
+	// ControlPanel
+	public final static String OPEN_ICON = "icons/open.png";
+	public final static String VIEWER_ICON = "icons/viewer.png";
+	public final static String REGIONS_ICON = "icons/regions.png";
+	public final static String RUN_ICON = "icons/run.png";
+	public final static String STOP_ICON = "icons/stop.png";
+	public final static String EXIT_ICON = "icons/exit.png";
+	
+	public final static int STEPS_INITIAL_VALUE = 10000;
+	public final static int STEPS_MIN = 1;
+	public final static int STEPS_MAX = Integer.MAX_VALUE;
+	public final static int STEPS_INCREMENT = 1;
+	public final static int DELTA_TIME_TEXT_COLS = 5;
+	
+	
 }
