@@ -1,9 +1,6 @@
-package simulator.model;
+package simulator.misc;
 
 public final class Const {
-
-	public Const() {
-	}
 
 	// Animal
 	public final static double INIT_ENERGY = 100.0;
@@ -51,5 +48,9 @@ public final class Const {
 	// DynamicSupplyRegionBuilder
 	public final static double FACTOR = 2.0;
 	public final static double INIT_FOOD = 1000.0;
+	
+	// Main
+	public final static Double DEFAULT_TIME = 10.0; // in seconds
+	public final static Double DEFAULT_DT = 0.03;
 
 }

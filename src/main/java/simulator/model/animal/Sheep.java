@@ -2,9 +2,9 @@ package simulator.model.animal;
 
 import java.util.List;
 
+import simulator.misc.Const;
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
-import simulator.model.Const;
 import simulator.model.strategy.SelectionStrategy;
 
 public class Sheep extends Animal {

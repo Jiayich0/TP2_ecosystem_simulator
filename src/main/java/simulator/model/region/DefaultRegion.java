@@ -1,6 +1,6 @@
 package simulator.model.region;
 
-import simulator.model.Const;
+import simulator.misc.Const;
 import simulator.model.animal.Animal;
 import simulator.model.animal.AnimalInfo;
 

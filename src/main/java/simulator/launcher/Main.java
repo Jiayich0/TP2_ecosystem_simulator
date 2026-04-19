@@ -22,6 +22,7 @@ import org.json.JSONTokener;
 
 import simulator.control.Controller;
 import simulator.factories.*;
+import simulator.misc.Const;
 import simulator.misc.Utils;
 import simulator.model.Simulator;
 import simulator.model.animal.Animal;
@@ -54,8 +55,7 @@ public class Main {
 
 	// default values for some parameters
 	//
-	private final static Double DEFAULT_TIME = 10.0; // in seconds
-	private final static Double DEFAULT_DT = 0.03;
+	// moved to CONST
 
 	// some attributes to stores values corresponding to command-line parameters
 	//
@@ -67,7 +67,7 @@ public class Main {
 	public static Factory<Animal> animalsFactory;
 	public static Factory<Region> regionsFactory;
 
-	public static Double dt = DEFAULT_DT;
+	public static Double dt = Const.DEFAULT_DT;
 	private static String outFile = null;
 	private static boolean sv = false;
 
@@ -132,7 +132,7 @@ public class Main {
 
 		// steps
 		cmdLineOptions.addOption(Option.builder("t").longOpt("time").hasArg()
-				.desc("An real number representing the total simulation time in seconds. Default value: " + DEFAULT_TIME
+				.desc("An real number representing the total simulation time in seconds. Default value: " + Const.DEFAULT_TIME
 						+ ".")
 				.build());
 
@@ -155,7 +155,7 @@ public class Main {
 	}
 
 	private static void parseModeOption(CommandLine line) throws ParseException {
-		String m = line.getOptionValue("m", ExecMode.GUI.getTag());
+		String m = line.getOptionValue("m", mode.getTag());
 
 		if (m.equalsIgnoreCase(ExecMode.BATCH.getTag())) {
 			mode = ExecMode.BATCH;
@@ -167,7 +167,7 @@ public class Main {
 	}
 
 	private static void parseTimeOption(CommandLine line) throws ParseException {
-		String t = line.getOptionValue("t", DEFAULT_TIME.toString());
+		String t = line.getOptionValue("t", Const.DEFAULT_TIME.toString());
 		try {
 			time = Double.parseDouble(t);
 			assert (time >= 0);
@@ -177,7 +177,7 @@ public class Main {
 	}
 
 	private static void parseDtOption(CommandLine line) throws ParseException {
-		String s = line.getOptionValue("dt", DEFAULT_DT.toString());
+		String s = line.getOptionValue("dt", Const.DEFAULT_DT.toString());
 		try {
 			dt = Double.parseDouble(s);
 			if (dt <= 0)

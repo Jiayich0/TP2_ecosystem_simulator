@@ -2,7 +2,7 @@ package simulator.factories;
 
 import org.json.JSONObject;
 
-import simulator.model.Const;
+import simulator.misc.Const;
 import simulator.model.region.DynamicSupplyRegion;
 import simulator.model.region.Region;
 

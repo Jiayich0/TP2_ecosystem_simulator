@@ -1,7 +1,7 @@
 package simulator.model.region;
 
+import simulator.misc.Const;
 import simulator.misc.Utils;
-import simulator.model.Const;
 import simulator.model.animal.Animal;
 import simulator.model.animal.AnimalInfo;
 
